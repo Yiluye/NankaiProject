@@ -15,7 +15,7 @@ int APIENTRY WinMain(
     _In_ int nShowCmd) {
 
     Init();
-    initgraph(1000, 600);  // 窗口大小 1000x600
+    initgraph(SCREEN_WIDTH,SCREEN_HEIGHT);  // 窗口大小 1000x600
     BeginBatchDraw();
 
     Application* app = Getapplication();

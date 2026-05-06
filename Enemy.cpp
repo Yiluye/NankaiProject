@@ -1,0 +1,49 @@
+#include "Enemy.h"
+Enemy::Enemy(double x, double y) {
+
+}
+// ¾²Ö¹£ºÖ»¸üÐÂÀäÈ´
+void Enemy::Update()
+{
+	if (shootCooldown > 0) shootCooldown--;
+}
+
+void Enemy::Draw()
+{
+	setfillcolor(RED);
+	fillcircle((int)pos.x, (int)pos.y, radius);
+}
+
+int Enemy::GetHp() const {
+	return hp;
+}
+void Enemy::TakeDamage(int damage)
+{
+	hp -= damage;
+	if (hp < 0) hp = 0;
+}
+
+bool Enemy::IsAlive() const 
+{ 
+	return hp > 0;
+}
+
+bool Enemy::CanShoot() const 
+{ 
+	return shootCooldown <= 0;
+}
+
+void Enemy::ResetShootCooldown() 
+{
+	shootCooldown = SHOOT_DELAY;
+}
+
+void Enemy::DecrementCooldown() 
+{
+	if (shootCooldown > 0) shootCooldown--;
+}
+
+int Enemy::GetRadius() const 
+{
+	return radius; 
+}
