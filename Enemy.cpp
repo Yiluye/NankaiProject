@@ -40,10 +40,6 @@ void Enemy::ResetShootCooldown()
 	shootCooldown = SHOOT_DELAY;
 }
 
-void Enemy::DecrementCooldown() 
-{
-	if (shootCooldown > 0) shootCooldown--;
-}
 
 int Enemy::GetRadius() const 
 {

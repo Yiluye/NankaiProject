@@ -27,6 +27,7 @@ public:
 	Rect Getborder()const;
 
 	virtual void Draw() {};
+	virtual void Update() {};
 };
 
 

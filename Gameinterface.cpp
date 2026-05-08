@@ -1,35 +1,121 @@
-#include "interface.h"
+#include "Interface.h"
 #include "Application.h"
 #include "Global.h"
 #include "messege.h"
 #include "Player.h"
 #include "Enemy.h"
+#include "Boss.h"
 #include "Bullet.h"
 #include "Random.h"
 #include <algorithm>
 
+//构造函数
 DanmakuGameInterface::DanmakuGameInterface()
-    : Interface(L"DanmakuGame"), score(0), enemySpawnCounter(0), gameRunning(true), shootCooldown(0) {
+    : Interface(L"DanmakuGame"), score(0), gameRunning(true), shootCooldown(0),
+    minionSpawnTimer(0), minionSpawnDelay(90) {
 }
 
+//由智能指针管理没必要手动释放
 DanmakuGameInterface::~DanmakuGameInterface() {
 }
 
+//进入初始化
+//1、设置玩家和怪物位置
+//2、清楚上局残留
 void DanmakuGameInterface::Onenter() {
     player = std::make_shared<Player>();
-    enemies.clear();
+    boss = std::make_shared<Boss>(SCREEN_WIDTH / 2.0, 80.0);
+    //
+    minions.clear();
     bullets.clear();
     score = 0;
-    enemySpawnCounter = 0;
+    minionSpawnTimer = 0;
+    minionSpawnDelay = 90;   // 初始生成间隔（帧）
     gameRunning = true;
     shootCooldown = 0;
 }
 
 void DanmakuGameInterface::Onexit() {
     player.reset();
-    enemies.clear();
+    boss.reset();
+    minions.clear();
     bullets.clear();
 }
+
+//子弹更新
+void DanmakuGameInterface::updateBullets() {
+    for (auto& bullet : bullets) {
+        bullet->Update();
+    }
+}
+
+//删除失活的游戏对象（敌人和子弹）
+void DanmakuGameInterface::RemoveInactiveGameobject() {
+    bullets.erase(std::remove_if(bullets.begin(), bullets.end(),
+        [](const std::shared_ptr<Bullet>& b) { return !b->IsActive(); }), bullets.end());
+
+    minions.erase(std::remove_if(minions.begin(), minions.end(),
+        [](const std::shared_ptr<Enemy>& e) { return !e->IsAlive(); }), minions.end());
+}
+
+//碰撞检测
+void DanmakuGameInterface::checkCollisions() {
+    // 玩家与敌方子弹碰撞（所有敌方子弹）
+    for (auto& bullet : bullets) {
+        if (!bullet->IsActive()) continue;
+        if (bullet->GetCamp() == Camp::ENEMY) {
+            double dx = player->Getx() - bullet->Getx();
+            double dy = player->Gety() - bullet->Gety();
+            double minDist = player->GetRadius() + bullet->GetRadius();
+            if (dx * dx + dy * dy < minDist * minDist) {
+                player->TakeDamage(10);
+                bullet->Deactivate();
+                if (!player->IsAlive()) {
+                    gameRunning = false;
+                }
+            }
+        }
+    }
+
+    //Boss受击
+    if (boss && boss->IsAlive()) {
+        for (auto& bullet : bullets) {
+            if (!bullet->IsActive()) continue;
+            if (bullet->GetCamp() == Camp::PLAYER) {
+                double dx = boss->Getx() - bullet->Getx();
+                double dy = boss->Gety() - bullet->Gety();
+                double minDist = boss->GetRadius() + bullet->GetRadius();
+                if (dx * dx + dy * dy < minDist * minDist) {
+                    boss->TakeDamage(10);
+                    bullet->Deactivate();
+                    if (!boss->IsAlive()) {
+                        score += 2000;   // 击败 Boss 奖励
+                    }
+                }
+            }
+        }
+    }
+
+    //小怪受击
+    for (auto& minion : minions) {
+        for (auto& bullet : bullets) {
+            if (!bullet->IsActive()) continue;
+            if (bullet->GetCamp() == Camp::PLAYER) {
+                double dx = minion->Getx() - bullet->Getx();
+                double dy = minion->Gety() - bullet->Gety();
+                double minDist = minion->GetRadius() + bullet->GetRadius();
+                if (dx * dx + dy * dy < minDist * minDist) {
+                    minion->TakeDamage(10);
+                    bullet->Deactivate();
+                    if (!minion->IsAlive()) {
+                        score += 100;
+                    }
+                }
+            }
+        }
+    }
+}
+
 
 void DanmakuGameInterface::Update() {
     // ESC 返回主菜单
@@ -46,77 +132,102 @@ void DanmakuGameInterface::Update() {
         return;
     }
 
-    // 1. 更新玩家
+    //玩家位置更新
     player->Update();
 
-    // 2. 玩家射击（Z 键或空格）
+    //玩家射击更新
+    //射击冷却更新
     if (shootCooldown > 0) shootCooldown--;
+    //射击
     if ((Iskeydown('Z') || Iskeydown(VK_SPACE)) && shootCooldown == 0) {
         bullets.push_back(std::make_shared<Bullet>(
             player->Getx(), player->Gety() - 15, 0, -9, 4, Camp::PLAYER));
+        //重置射击冷却
         shootCooldown = SHOOT_DELAY;
     }
 
-    // 3. 生成敌人（静止，位置随机）
-    if (enemySpawnCounter <= 0) {
-        double randX = Random(50.0, 750.0);
-        double randY = Random(50.0, 300.0);  // 敌人生成在上半屏
-        enemies.push_back(std::make_shared<Enemy>(randX, randY));
-        enemySpawnCounter = 90;  // 约1.5秒生成一个（60帧）
+    //Boss射击更新
+    if (boss && boss->IsAlive()) {
+        boss->Update();
+        boss->Shoot(bullets, player->Getx(), player->Gety());
     }
-    else {
-        enemySpawnCounter--;
+    else if (boss && !boss->IsAlive()) {
+        //Boss死亡直接结束游戏
+        gameRunning = false;
     }
 
-    // 4. 更新敌人（静止，只更新冷却）并射击
-    for (auto& enemy : enemies) {
-        enemy->Update();
-        enemy->DecrementCooldown();
-
-        // 敌人向玩家方向发射子弹
-        if (enemy->CanShoot()) {
-            double dx = player->Getx() - enemy->Getx();
-            double dy = player->Gety() - enemy->Gety();
-            double len = sqrt(dx * dx + dy * dy);
-            if (len > 0.1) {
-                double vx = dx / len * 5;
-                double vy = dy / len * 5;
-                bullets.push_back(std::make_shared<Bullet>(
-                    enemy->Getx(), enemy->Gety(), vx, vy, 4, Camp::ENEMY));
-            }
-            else {
-                bullets.push_back(std::make_shared<Bullet>(
-                    enemy->Getx(), enemy->Gety(), 0, 5, 4, Camp::ENEMY));
-            }
-            enemy->ResetShootCooldown();
+    //生成小怪
+    if (boss && boss->IsAlive()) 
+    {
+        if (minionSpawnTimer <= 0) 
+        {
+            // 随机位置（屏幕上半区）
+            double randX = Random(40.0, SCREEN_WIDTH - 40.0);
+            double randY = Random(30.0, 150.0);
+            minions.push_back(std::make_shared<Enemy>(randX, randY));
+            //更新小怪生成冷却
+            minionSpawnTimer = minionSpawnDelay;
+        }
+        else 
+        {
+            minionSpawnTimer--;
         }
     }
 
-    // 5. 更新子弹
+    //更新小怪射击
+    for (auto& minion : minions) {
+        minion->Update();
+
+        //狙击炮 
+        if (minion->CanShoot()) {
+            double dx = player->Getx() - minion->Getx();
+            double dy = player->Gety() - minion->Gety();
+            double len = sqrt(dx * dx + dy * dy);
+            if (len > 0.1) {
+                double vx = dx / len * 4;
+                double vy = dy / len * 4;
+                bullets.push_back(std::make_shared<Bullet>(
+                    minion->Getx(), minion->Gety(), vx, vy, 4, Camp::ENEMY));
+            }
+            else {
+                bullets.push_back(std::make_shared<Bullet>(
+                    minion->Getx(), minion->Gety(), 0, 4, 4, Camp::ENEMY));
+            }
+            minion->ResetShootCooldown();
+        }
+    }
+
+    //更新所有子弹
     updateBullets();
 
-    // 6. 碰撞检测
+    // 碰撞检测
     checkCollisions();
 
-    // 7. 移除无效对象
-    removeInactiveBullets();
-    enemies.erase(std::remove_if(enemies.begin(), enemies.end(),
-        [](const std::shared_ptr<Enemy>& e) { return !e->IsAlive(); }), enemies.end());
+    //删除垃圾
+    RemoveInactiveGameobject();
 
-    // 8. 检查玩家是否死亡
+    //检查玩家是否死亡
     if (!player->IsAlive()) {
         gameRunning = false;
     }
 }
 
 void DanmakuGameInterface::Draw() {
+    // 清屏（若有背景图可在此绘制）
+    cleardevice();
+
+    // 绘制 Boss（如果存活）
+    if (boss && boss->IsAlive()) {
+        boss->Draw();
+    }
+
+    // 绘制小怪
+    for (const auto& minion : minions) {
+        minion->Draw();
+    }
+
     // 绘制玩家
     player->Draw();
-
-    // 绘制敌人
-    for (const auto& enemy : enemies) {
-        enemy->Draw();
-    }
 
     // 绘制子弹
     for (const auto& bullet : bullets) {
@@ -128,72 +239,21 @@ void DanmakuGameInterface::Draw() {
     TCHAR str[128];
     _stprintf_s(str, _T("Score: %d  HP: %d"), score, player->GetHp());
     outtextxy(10, 10, str);
-
-    // 绘制敌人数
-    _stprintf_s(str, _T("Enemies: %d"), (int)enemies.size());
+    _stprintf_s(str, _T("Minions: %d"), (int)minions.size());
     outtextxy(10, 40, str);
+    if (boss) {
+        _stprintf_s(str, _T("Boss HP: %d/%d"), boss->GetHp(), boss->GetMaxHp());
+        outtextxy(10, 70, str);
+    }
 
+    // 游戏结束画面
     if (!gameRunning) {
         settextstyle(40, 0, _T("宋体"));
-        outtextxy(420, 250, _T("GAME OVER"));
+        outtextxy(SCREEN_WIDTH / 2 - 100, SCREEN_HEIGHT / 2 - 20, _T("GAME OVER"));
         settextstyle(20, 0, _T("宋体"));
-        outtextxy(420, 320, _T("Press R to Restart"));
-        outtextxy(420, 350, _T("Press ESC to Menu"));
+        outtextxy(SCREEN_WIDTH / 2 - 80, SCREEN_HEIGHT / 2 + 30, _T("Press R to Restart"));
+        outtextxy(SCREEN_WIDTH / 2 - 80, SCREEN_HEIGHT / 2 + 60, _T("Press ESC to Menu"));
     }
 }
 
-void DanmakuGameInterface::spawnEnemy() {
-    // 已在 Update 中实现
-}
 
-void DanmakuGameInterface::updateBullets() {
-    for (auto& bullet : bullets) {
-        bullet->Update();
-    }
-}
-
-void DanmakuGameInterface::checkCollisions() {
-    // 玩家与敌方子弹碰撞
-    for (auto& bullet : bullets) {
-        if (!bullet->IsActive())
-        {
-            continue;
-        }
-        if (bullet->GetCamp() == Camp::ENEMY) {
-            //比较二者中心距离和半径之和来判断是否碰撞
-            double dx = player->Getx() - bullet->Getx();
-            double dy = player->Gety() - bullet->Gety();
-            double minDist = player->GetRadius() + bullet->GetRadius();
-            //玩家受击反馈
-            if (dx * dx + dy * dy < minDist * minDist) {
-                player->TakeDamage(10);
-                bullet->Deactivate();
-            }
-        }
-    }
-
-    // 敌人与玩家子弹碰撞
-    for (auto& enemy : enemies) {
-        for (auto& bullet : bullets) {
-            if (!bullet->IsActive()) continue;
-            if (bullet->GetCamp() == Camp::PLAYER) {
-                double dx = enemy->Getx() - bullet->Getx();
-                double dy = enemy->Gety() - bullet->Gety();
-                double minDist = enemy->GetRadius() + bullet->GetRadius();
-                if (dx * dx + dy * dy < minDist * minDist) {
-                    enemy->TakeDamage(10);
-                    //子弹失活
-                    bullet->Deactivate();
-                    if (!enemy->IsAlive()) {
-                        score += 100;
-                    }
-                }
-            }
-        }
-    }
-}
-
-void DanmakuGameInterface::removeInactiveBullets() {
-    bullets.erase(std::remove_if(bullets.begin(), bullets.end(),
-        [](const std::shared_ptr<Bullet>& b) { return !b->IsActive(); }), bullets.end());
-}

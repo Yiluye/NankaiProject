@@ -5,6 +5,7 @@
 #include"Button.h"
 #include<memory>
 #include<vector>
+
 class Interface {
 protected:
 	std::wstring name;
@@ -42,38 +43,47 @@ public:
 
 };
 
+//前置声明
 class Player;
+class Boss;
 class Enemy;
 class Bullet;
 
 class DanmakuGameInterface : public Interface {
 private:
-    std::shared_ptr<Player> player;
-    //智能指针管理
-    std::vector<std::shared_ptr<Enemy>> enemies;
-    std::vector<std::shared_ptr<Bullet>> bullets;
 
-    int score;
-    int enemySpawnCounter;
-    bool gameRunning;
+    std::shared_ptr<Player> player;                     // 玩家
+    std::shared_ptr<Boss> boss;                         // 主Boss
+    std::vector<std::shared_ptr<Enemy>> minions;        // 小怪（原 enemies 改名）
 
-    // 射击冷却
+    std::vector<std::shared_ptr<Bullet>> bullets;       // 所有子弹
+
+
+    int score;              // 得分
+    bool gameRunning;       // 游戏是否进行中
+
+
     int shootCooldown;
-    const int SHOOT_DELAY = 8;
+    static constexpr int SHOOT_DELAY = 8;   // 玩家射击间隔（帧）
+
+
+    int minionSpawnTimer;       // 当前剩余冷却帧数
+    int minionSpawnDelay;       // 动态生成间隔（帧）
 
 public:
     DanmakuGameInterface();
-    ~DanmakuGameInterface();
+    virtual ~DanmakuGameInterface();
 
+    // 界面生命周期
     void Onenter() override;
     void Onexit() override;
     void Update() override;
     void Draw() override;
 
 private:
-    void spawnEnemy();
-    void updateBullets();
-    void checkCollisions();
-    void removeInactiveBullets();
+    // 辅助方法
+    void updateBullets();               // 更新所有子弹位置
+    void checkCollisions();             // 碰撞检测（玩家/Boss/小怪/子弹）
+    void RemoveInactiveGameobject();
 };
 #endif

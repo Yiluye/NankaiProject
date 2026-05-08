@@ -24,7 +24,6 @@ public:
     bool IsAlive() const;
     bool CanShoot() const;
     void ResetShootCooldown();
-    void DecrementCooldown();
     int GetRadius() const;
 };
 
