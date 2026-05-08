@@ -22,6 +22,7 @@ void Boss::Update() {
         Alive = 0;
     }
 
+
     // 根据血量改变阶段和弹幕模式
     if (hp < maxHp * 0.5 && phase == 0) {
         phase = 1;
