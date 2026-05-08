@@ -18,8 +18,8 @@ public:
     void Draw() override;
 
     bool IsActive() const;
-    void Deactivate() { active = false; }
+    void Deactivate();
     Camp GetCamp() const;
     int GetRadius() const;
-
+};
 #endif // !_BULLET_H

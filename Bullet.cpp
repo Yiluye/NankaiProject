@@ -1,5 +1,5 @@
 #include"Bullet.h"
-
+#include"Global.h"
 Bullet::Bullet(double x, double y, double vx, double vy, int r, Camp c)
 	: Gameobject(r * 2, r * 2), velocity{ vx, vy }, radius(r), active(true), camp(c) {
 	pos.x = x;
@@ -13,8 +13,8 @@ void Bullet::Update()
 	pos.y += velocity.y;
 
 	// ³¬³öÆÁÄ»ÔòÊ§Ð§
-	if (pos.x + radius < 0 || pos.x - radius > 800 ||
-		pos.y + radius < 0 || pos.y - radius > 600) {
+	if (pos.x + radius < 0 || pos.x - radius > SCREEN_WIDTH ||
+		pos.y + radius < 0 || pos.y - radius > SCREEN_HEIGHT) {
 		active = false;
 	}
 }

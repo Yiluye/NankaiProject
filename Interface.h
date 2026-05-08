@@ -42,8 +42,17 @@ public:
 
 };
 
+class Player;
+class Enemy;
+class Bullet;
+
 class DanmakuGameInterface : public Interface {
 private:
+    std::shared_ptr<Player> player;
+    //智能指针管理
+    std::vector<std::shared_ptr<Enemy>> enemies;
+    std::vector<std::shared_ptr<Bullet>> bullets;
+
     int score;
     int enemySpawnCounter;
     bool gameRunning;
@@ -60,6 +69,11 @@ public:
     void Onexit() override;
     void Update() override;
     void Draw() override;
-};
 
+private:
+    void spawnEnemy();
+    void updateBullets();
+    void checkCollisions();
+    void removeInactiveBullets();
+};
 #endif

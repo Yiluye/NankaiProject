@@ -15,5 +15,5 @@ Application* Getapplication();
 
 extern bool Isrunning;
 
-
+extern int gamemode;
 #endif

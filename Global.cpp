@@ -12,3 +12,5 @@ Application* Getapplication() {
 }
 
 bool Isrunning = true;
+
+int gamemode = 0;

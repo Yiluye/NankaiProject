@@ -1,6 +1,8 @@
 #include "Enemy.h"
-Enemy::Enemy(double x, double y) {
-
+Enemy::Enemy(double x, double y)
+	: Gameobject(28, 28), hp(30), radius(14), shootCooldown(0) {
+	pos.x = x;
+	pos.y = y;
 }
 // ¾²Ö¹£ºÖ»¸üĞÂÀäÈ´
 void Enemy::Update()
