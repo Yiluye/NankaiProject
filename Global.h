@@ -16,4 +16,6 @@ Application* Getapplication();
 extern bool Isrunning;
 
 extern int gamemode;
+
+extern double pai;
 #endif
