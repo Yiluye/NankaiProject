@@ -135,7 +135,9 @@ void DanmakuGameInterface::Update() {
     //…‰ª˜
     if ((Iskeydown('Z') || Iskeydown(VK_SPACE)) && shootCooldown == 0) {
         bullets.push_back(std::make_shared<Bullet>(
-            player->Getx(), player->Gety() - 15, 0, -9, 4, Camp::PLAYER));
+            player->Getx()-player->GetRadius(), player->Gety() - 15, 0, -9, 4, Camp::PLAYER));
+        bullets.push_back(std::make_shared< Bullet>(
+            player->Getx()+player->GetRadius(), player->Gety() - 15, 0, -9, 4, Camp::PLAYER));
         //÷ÿ÷√…‰ª˜¿‰»¥
         shootCooldown = SHOOT_DELAY;
     }

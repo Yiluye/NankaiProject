@@ -2,7 +2,7 @@
 #include"messege.h"
 #include"Global.h"
 Player::Player()
-	:Gameobject(30,30),hp(500),radius(15),speed(6)
+	:Gameobject(30,30),hp(500),radius(5),speed(6)
 {
 	pos.x = SCREEN_WIDTH/2;
 	pos.y = 500;
@@ -17,6 +17,9 @@ void Player::Update()
 	if (Iskeydown(VK_UP) || Iskeydown('W')) pos.y -= speed;
 	if (Iskeydown(VK_DOWN) || Iskeydown('S')) pos.y += speed;
 
+	//调节速度
+	if (Iskeydown(VK_U)) speed += 2;
+	if (Iskeydown(VK_J))speed -= 2;
 	//修正位置
 	if (pos.x < radius) { pos.x = radius; }
 	if (pos.x > SCREEN_WIDTH - radius) { pos.x = SCREEN_WIDTH - radius; }

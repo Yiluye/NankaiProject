@@ -21,6 +21,8 @@ private:
     int Alive;          // 存活帧计数
     int Duration;    // 每种模式持续帧数
     int Pattern;     // 当前生效的弹幕模式
+
+    double Basexuanzhuansanshe;
 public:
     Boss(double x, double y);
     ~Boss() = default;

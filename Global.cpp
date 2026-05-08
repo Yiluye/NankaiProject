@@ -1,8 +1,8 @@
 #include"Global.h"
 #include"Application.h"
 
-const int SCREEN_WIDTH = 1000;
-const int SCREEN_HEIGHT = 600;
+const int SCREEN_WIDTH = 750;
+const int SCREEN_HEIGHT = 850;
 
 
 static Application application;
