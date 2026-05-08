@@ -12,9 +12,8 @@ public:
 
     void Update();
     void Draw() override;
-
-    int GetHp() const;
     void TakeDamage(int damage);
+    int GetHp() const;
     bool IsAlive() const;
     int GetRadius() const;
 

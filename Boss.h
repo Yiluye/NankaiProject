@@ -17,14 +17,15 @@ private:
     int shootTimer;
     int shootPattern;      // 0=散射, 1=自机狙, 2=环形
     int phase;             // 0=第一阶段, 1=第二阶段
-
+    int Alive;          // 存活帧计数
+    int Duration;    // 每种模式持续帧数
+    int Pattern;     // 当前生效的弹幕模式
 public:
     Boss(double x, double y);
     ~Boss() = default;
 
     void Update() override;
     void Draw() override;
-
     void TakeDamage(int damage);
     bool IsAlive() const { return hp > 0; }
     int GetHp() const { return hp; }

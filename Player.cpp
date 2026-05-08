@@ -45,9 +45,12 @@ void Player::TakeDamage(int damage)
 	hp -= damage;
 	if (hp < 0) hp = 0;
 }
-bool Player::IsAlive() const {
+
+bool Player::IsAlive() const
+{
 	return hp > 0;
 }
+
 int Player::GetRadius() const
 {
 	return radius;

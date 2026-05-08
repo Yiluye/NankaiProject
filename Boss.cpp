@@ -7,10 +7,20 @@ Boss::Boss(double x, double y)
     : Gameobject(60, 60), hp(300), maxHp(300), radius(30), shootTimer(0), shootPattern(0), phase(0) {
     pos.x = x;
     pos.y = y;
+    Alive = 0;
+    Duration = 300;
+    Pattern = 0;
 }
 
 void Boss::Update() {
     if (shootTimer > 0) shootTimer--;
+
+    Alive++;
+    if (Alive > Duration)
+    {
+        Pattern = (Pattern + 1) % 3;
+        Alive = 0;
+    }
 
     // 根据血量改变阶段和弹幕模式
     if (hp < maxHp * 0.5 && phase == 0) {
@@ -28,25 +38,39 @@ void Boss::Draw() {
         (int)(pos.x - 60 + 120 * hp / maxHp), (int)(pos.y - radius - 5));
 }
 
-void Boss::TakeDamage(int damage) {
-    hp -= damage;
-    if (hp < 0) hp = 0;
-}
 
 void Boss::Shoot(std::vector<std::shared_ptr<Bullet>>& bullets, double playerX, double playerY) {
     if (shootTimer > 0) return;
 
     switch (shootPattern) {
-    case 0: // 散射
-        for (int i = -2; i <= 2; ++i) {
-            double angle = i * 0.5;
+    case 0: // 八角散射
+        for (int i = -4; i <= 4; ++i) {
+            double angle = i * 0.78539816;
             double vx = sin(angle) * 4;
             double vy = cos(angle) * 4;
-            bullets.push_back(std::make_shared<Bullet>(pos.x, pos.y + radius, vx, vy, 5, Camp::ENEMY));
+            bullets.push_back(std::make_shared<Bullet>(pos.x, pos.y , vx, vy, 5, Camp::ENEMY));
+        }
+        shootTimer = 10;
+        break;
+    case 1: // 16角散射
+        for (int i = -8; i <= 8; ++i) {
+            double angle = i * 0.3926990;
+            double vx = sin(angle) * 4;
+            double vy = cos(angle) * 4;
+            bullets.push_back(std::make_shared<Bullet>(pos.x, pos.y, vx, vy, 5, Camp::ENEMY));
         }
         shootTimer = 25;
         break;
-    case 1: // 自机狙
+    case 2: // 16角散射
+        for (int i = -8; i <= 8; ++i) {
+            double angle = i * 0.3926990;
+            double vx = sin(angle) * 4;
+            double vy = cos(angle) * 4;
+            bullets.push_back(std::make_shared<Bullet>(pos.x, pos.y, vx, vy, 5, Camp::ENEMY));
+        }
+        shootTimer = 25;
+        break;
+    case 3: // 自机狙
     {
         double dx = playerX - pos.x;
         double dy = playerY - pos.y;
@@ -66,4 +90,9 @@ void Boss::Shoot(std::vector<std::shared_ptr<Bullet>>& bullets, double playerX, 
         shootTimer = 20;
         break;
     }
+}
+void Boss::TakeDamage(int damage)
+{
+    hp -= damage;
+    if (hp < 0) hp = 0;
 }

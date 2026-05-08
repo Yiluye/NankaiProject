@@ -19,11 +19,7 @@ void Enemy::Draw()
 int Enemy::GetHp() const {
 	return hp;
 }
-void Enemy::TakeDamage(int damage)
-{
-	hp -= damage;
-	if (hp < 0) hp = 0;
-}
+
 
 bool Enemy::IsAlive() const 
 { 
@@ -44,4 +40,10 @@ void Enemy::ResetShootCooldown()
 int Enemy::GetRadius() const 
 {
 	return radius; 
+}
+
+void Enemy::TakeDamage(int damage)
+{
+	hp -= damage;
+	if (hp < 0) hp = 0;
 }

@@ -14,11 +14,9 @@ DanmakuGameInterface::DanmakuGameInterface()
     : Interface(L"DanmakuGame"), score(0), gameRunning(true), shootCooldown(0),
     minionSpawnTimer(0), minionSpawnDelay(90) {
 }
-
 //由智能指针管理没必要手动释放
 DanmakuGameInterface::~DanmakuGameInterface() {
 }
-
 //进入初始化
 //1、设置玩家和怪物位置
 //2、清楚上局残留
@@ -34,21 +32,18 @@ void DanmakuGameInterface::Onenter() {
     gameRunning = true;
     shootCooldown = 0;
 }
-
 void DanmakuGameInterface::Onexit() {
     player.reset();
     boss.reset();
     minions.clear();
     bullets.clear();
 }
-
 //子弹更新
 void DanmakuGameInterface::updateBullets() {
     for (auto& bullet : bullets) {
         bullet->Update();
     }
 }
-
 //删除失活的游戏对象（敌人和子弹）
 void DanmakuGameInterface::RemoveInactiveGameobject() {
     bullets.erase(std::remove_if(bullets.begin(), bullets.end(),
@@ -57,7 +52,6 @@ void DanmakuGameInterface::RemoveInactiveGameobject() {
     minions.erase(std::remove_if(minions.begin(), minions.end(),
         [](const std::shared_ptr<Enemy>& e) { return !e->IsAlive(); }), minions.end());
 }
-
 //碰撞检测
 void DanmakuGameInterface::checkCollisions() {
     // 玩家与敌方子弹碰撞（所有敌方子弹）
