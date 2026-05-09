@@ -4,14 +4,28 @@
 
 #include"Gameobject.h"
 
+enum class BulletShape {
+    CIRCLE,     // 圆形
+    RECT        // 长方形（梭形）
+};
+
+
 class Bullet :public Gameobject {
 private:
     Vector velocity;
     int radius;
+    int width;               // 长方形宽度（圆形时等于 2*radius）
+    int height;              // 长方形高度（圆形时等于 2*radius）
+    double rotation;
+
     bool active;
     Camp camp;
+    BulletShape shape;       // 形状
 public:
     Bullet(double x, double y, double vx, double vy, int r, Camp c);
+    Bullet(double x, double y, double vx, double vy, int w, int h, Camp c);
+    Bullet(double x, double y, double vx, double vy, int w, int h, double rot, Camp c);
+
     ~Bullet() = default;
 
     void Update();

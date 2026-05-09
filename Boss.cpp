@@ -4,12 +4,12 @@
 #include <cmath>
 
 Boss::Boss(double x, double y)
-    : Gameobject(60, 60), hp(300), maxHp(300), radius(30), shootTimer(0), Pattern(0), phase(0) {
+    : Gameobject(60, 60), hp(1500), maxHp(300), radius(30), shootTimer(0), Pattern(0), phase(0) {
     pos.x = x;
     pos.y = y;
     Alive = 0;
-    Duration = 200;
-    Pattern = 3;
+    Duration = 100;
+    Pattern = 2;
     totaltime = 0;
 
     Basexuanzhuansanshe = 0;
@@ -21,7 +21,7 @@ void Boss::Update() {
     Alive++;
     if (Alive > Duration)
     {
-        Pattern = (Pattern + 1) % 5;
+        Pattern = (Pattern + 1) % 7;
         Alive = 0;
     }
     totaltime++;
@@ -73,7 +73,7 @@ void Boss::Shoot(std::vector<std::shared_ptr<Bullet>>& bullets, double playerX, 
             double vy = cos(angle) * 5;
             bullets.push_back(std::make_shared<Bullet>(pos.x, pos.y , vx, vy, 5, Camp::ENEMY));
         }
-        shootTimer = 1;
+        shootTimer = 5;
         break;
     }
     case 2: //角度变化散射
@@ -97,12 +97,14 @@ void Boss::Shoot(std::vector<std::shared_ptr<Bullet>>& bullets, double playerX, 
         double dy = playerY - pos.y;
         double len = sqrt(dx * dx + dy * dy);
         if (len > 0.1) {
-            double vx = dx / len * 20;
-            double vy = dy / len * 20;
-            bullets.push_back(std::make_shared<Bullet>(pos.x, pos.y + radius, vx, vy, 8, Camp::ENEMY));
+            double vx = dx / len * 10;
+            double vy = dy / len * 10;
+            bullets.push_back(std::make_shared<Bullet>(pos.x, pos.y , vx, vy, 5, Camp::ENEMY));
+            bullets.push_back(std::make_shared<Bullet>(150, 200, vx >= 0 ? -vx : vx, vy, 5, Camp::ENEMY));
+            bullets.push_back(std::make_shared<Bullet>(600, 200, vx < 0 ? -vx : vx, vy, 5, Camp::ENEMY));
         }
         else {
-            bullets.push_back(std::make_shared<Bullet>(pos.x, pos.y + radius, 0, 6, 8, Camp::ENEMY));
+            bullets.push_back(std::make_shared<Bullet>(pos.x, pos.y + radius, 0, 6, 5, Camp::ENEMY));
         }
         shootTimer = 1;
         break;
@@ -140,11 +142,35 @@ void Boss::Shoot(std::vector<std::shared_ptr<Bullet>>& bullets, double playerX, 
         shootTimer = 5;
         break;
     }
+
+    case 6: // 多方向梭形弹幕（8 方向，梭形指向径向）
+    {
+        int numDirections = 8;          // 8 个方向
+        double speed = 5.0;
+        double bulletWidth = 16.0;      // 长边（尖头方向）
+        double bulletHeight = 6.0;      // 短边
+
+        for (int i = 0; i < numDirections; ++i) {
+            double angle = 2 * pai * i / numDirections;   // 发射方向（弧度）
+            double vx = cos(angle) * speed;
+            double vy = sin(angle) * speed;
+            // 梭形长边指向径向（即旋转角 = 发射方向）
+            bullets.push_back(std::make_shared<Bullet>(
+                pos.x, pos.y, vx, vy,
+                (int)bulletWidth, (int)bulletHeight,
+                angle,                          // 旋转角
+                Camp::ENEMY
+            ));
+        }
+        shootTimer = 30;        // 冷却时间
+        break;
+    }
     break;
     default:
         shootTimer = 20;
         break;
     }
+
 }
 void Boss::TakeDamage(int damage)
 {
