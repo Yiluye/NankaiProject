@@ -1,4 +1,5 @@
 #include "Enemy.h"
+#include "Global.h"
 Enemy::Enemy(double x, double y, EnemyMove move)
 	: Gameobject(28, 28), hp(30), radius(14), shootCooldown(0),bulletType(EnemyBulletType::NORMAL)
 {
@@ -13,7 +14,11 @@ void Enemy::Update()
 	if (shootCooldown > 0) shootCooldown--;
 	if (enemymove == EnemyMove::LEFT) pos.x -= velocity;
 	if (enemymove == EnemyMove::RIGHT) pos.x += velocity;
+
+	if (pos.x < radius) pos.x = radius;
+	if (pos.x > GAME_AREA_RIGHT - radius) pos.x = GAME_AREA_RIGHT - radius;
 }
+
 
 void Enemy::Draw()
 {

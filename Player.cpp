@@ -22,7 +22,7 @@ void Player::Update()
 	if (Iskeydown(VK_J))speed -= 2;
 	//ÐÞÕýÎ»ÖÃ
 	if (pos.x < radius) { pos.x = radius; }
-	if (pos.x > SCREEN_WIDTH - radius) { pos.x = SCREEN_WIDTH - radius; }
+	if (pos.x > GAME_AREA_RIGHT - radius) { pos.x = GAME_AREA_RIGHT - radius; }
 	if (pos.y < radius) { pos.y = radius; }
 	if (pos.y > SCREEN_HEIGHT - radius) { pos.y = SCREEN_HEIGHT - radius; }
 

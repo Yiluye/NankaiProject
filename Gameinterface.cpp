@@ -76,7 +76,7 @@ DanmakuGameInterface::~DanmakuGameInterface() {
 void DanmakuGameInterface::Onenter() {
     gametime = 0;
     player = std::make_shared<Player>();
-    boss = std::make_shared<Boss>(SCREEN_WIDTH / 2.0, 80.0);
+    boss = std::make_shared<Boss>(GAME_AREA_RIGHT / 2.0, 80.0);
     //
     minions.clear();
     bullets.clear();
@@ -215,6 +215,9 @@ void DanmakuGameInterface::Update() {
         bullets.push_back(std::make_shared< Bullet>(
             player->Getx()+player->GetRadius(), player->Gety() - 15, 0, -9, 4,
             Camp::PLAYER,BulletColor::BTRED));
+
+        PlaySound(_T("res/shoot.wav"), NULL, SND_ASYNC | SND_FILENAME);
+
         //重置射击冷却
         shootCooldown = SHOOT_DELAY;
     }
@@ -237,7 +240,7 @@ void DanmakuGameInterface::Update() {
         if (minionSpawnTimer <= 0) 
         {
             // 随机位置（屏幕上半区）
-            double randX = Random(40.0, SCREEN_WIDTH - 40.0);
+            double randX = Random(40.0, GAME_AREA_RIGHT - 40.0);
             double randY = Random(30.0, 150.0);
             //minions.push_back(std::make_shared<Enemy>(randX, randY,0));
             EnemyMove move = (Random(0, 2) == 0) ? EnemyMove::LEFT : EnemyMove::RIGHT;
@@ -337,8 +340,8 @@ void DanmakuGameInterface::Update() {
 void DanmakuGameInterface::Draw() {
     // 清屏（若有背景图可在此绘制）
     cleardevice();
-    
-    //绘制背景
+
+    // 绘制背景（假设背景图已缩放到 SCREEN_WIDTH × SCREEN_HEIGHT）
     putimage(0, 0, &imgGame);
 
     // 绘制 Boss（如果存活）
@@ -359,19 +362,35 @@ void DanmakuGameInterface::Draw() {
         bullet->Draw();
     }
 
-    // 绘制 UI
+    // 可选：绘制分隔线区分游戏区域和UI区域
+    //setlinecolor(WHITE);
+    //line(GAME_AREA_RIGHT, 0, GAME_AREA_RIGHT, SCREEN_HEIGHT);
+
+    // 绘制 UI（显示在右侧区域）
     settextcolor(WHITE);
     TCHAR str[128];
-    _stprintf_s(str, _T("Score: %d  HP: %d"), score, player->GetHp());
-    outtextxy(10, 10, str);
+
+    int uiX = GAME_AREA_RIGHT + 10;  // UI 起始 X 坐标
+    int uiY = 10;
+
+    _stprintf_s(str, _T("Score: %d"), score);
+    outtextxy(uiX, uiY, str);
+    uiY += 30;
+
+    _stprintf_s(str, _T("HP: %d"), player->GetHp());
+    outtextxy(uiX, uiY, str);
+    uiY += 30;
+
     _stprintf_s(str, _T("Minions: %d"), (int)minions.size());
-    outtextxy(10, 40, str);
+    outtextxy(uiX, uiY, str);
+    uiY += 30;
+
     if (boss) {
         _stprintf_s(str, _T("Boss HP: %d/%d"), boss->GetHp(), boss->GetMaxHp());
-        outtextxy(10, 70, str);
+        outtextxy(uiX, uiY, str);
     }
 
-    // 游戏结束画面
+    // 游戏结束画面（居中在整个窗口）
     if (!gameRunning) {
         settextstyle(40, 0, _T("宋体"));
         outtextxy(SCREEN_WIDTH / 2 - 100, SCREEN_HEIGHT / 2 - 20, _T("GAME OVER"));

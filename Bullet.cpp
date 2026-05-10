@@ -57,7 +57,7 @@ void Bullet::Update()
 	pos.y += velocity.y;
 
 	// ³¬³öÆÁÄ»ÔòÊ§Ð§
-	if (pos.x + radius < 0 || pos.x - radius > SCREEN_WIDTH ||
+	if (pos.x + radius < 0 || pos.x - radius > GAME_AREA_RIGHT ||
 		pos.y + radius < 0 || pos.y - radius > SCREEN_HEIGHT) {
 		active = false;
 	}

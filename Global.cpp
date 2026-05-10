@@ -1,10 +1,6 @@
 #include"Global.h"
 #include"Application.h"
 
-const int SCREEN_WIDTH = 750;
-const int SCREEN_HEIGHT = 850;
-
-
 static Application application;
 
 Application* Getapplication() {
@@ -40,3 +36,11 @@ void LoadAllTextures() {
 
     loadimage(&imgBoss, _T("res/boss.png"), 66,150);
 }
+
+const int SCREEN_WIDTH = 1000;
+const int SCREEN_HEIGHT = 850;
+
+const int GAME_AREA_WIDTH = 750;
+const int UI_AREA_WIDTH = 250;
+const int GAME_AREA_LEFT = 0;
+const int GAME_AREA_RIGHT = GAME_AREA_WIDTH;  // 750
