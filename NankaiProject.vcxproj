@@ -132,6 +132,7 @@
     <ClInclude Include="Gameobject.h" />
     <ClInclude Include="Global.h" />
     <ClInclude Include="Interface.h" />
+    <ClInclude Include="item.h" />
     <ClInclude Include="messege.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="Random.h" />
@@ -145,6 +146,7 @@
     <ClCompile Include="Gameinterface.cpp" />
     <ClCompile Include="Gameobject.cpp" />
     <ClCompile Include="Global.cpp" />
+    <ClCompile Include="item.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Maininterface.cpp" />
     <ClCompile Include="messege.cpp" />

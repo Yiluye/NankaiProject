@@ -6,6 +6,7 @@
 #include<memory>
 #include<vector>
 #include <functional>
+#include"item.h"
 
 class Interface {
 protected:
@@ -58,7 +59,7 @@ private:
     std::vector<std::shared_ptr<Enemy>> minions;        // 小怪（原 enemies 改名）
 
     std::vector<std::shared_ptr<Bullet>> bullets;       // 所有子弹
-
+    std::vector<std::shared_ptr<Item>> items;
 
     int score;              // 得分
     bool gameRunning;       // 游戏是否进行中

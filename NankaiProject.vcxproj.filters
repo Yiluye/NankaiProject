@@ -51,6 +51,9 @@
     <ClInclude Include="Boss.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="item.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="messege.cpp">
@@ -90,6 +93,9 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="Boss.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="item.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

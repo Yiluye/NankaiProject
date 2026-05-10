@@ -17,6 +17,9 @@ public:
     bool IsAlive() const;
     int GetRadius() const;
 
+    void AddHp(int amount);   // ¼ÓÑª
+    void SubHp(int amount);   // ¼õÑª
+
     void Reset();
 
 };

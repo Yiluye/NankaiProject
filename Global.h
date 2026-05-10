@@ -22,6 +22,7 @@ extern int zhenpermiao;
 
 extern int gametime;   // 游戏全局时间
 
+extern int totalhp;
 
 // 声明贴图资源
 extern IMAGE imgSprite;        // 精灵表（包含所有弹幕）
@@ -37,6 +38,9 @@ extern IMAGE imgGame;   // 游戏界面背景
 extern IMAGE imgBoss;   // Boss 图片
 extern IMAGE imgEnemy;   // 小怪图片
 extern IMAGE imgPlayer;  //玩家图片
+
+extern IMAGE imgPowerRed;   // 红色 P 点
+extern IMAGE imgPowerBlue;  // 蓝色 P 点
 
 // 全局区域定义
 extern const int GAME_AREA_WIDTH;   // 游戏区域宽度（750）

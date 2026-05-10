@@ -16,6 +16,8 @@ int zhenpermiao = 60;
 
 int gametime = 0;
 
+int totalhp = 500;
+
 // 定义贴图资源
 IMAGE imgSprite;
 int iconW = 16;

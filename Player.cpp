@@ -2,7 +2,7 @@
 #include"messege.h"
 #include"Global.h"
 Player::Player()
-	:Gameobject(30,30),hp(50000),radius(5),speed(6)
+	:Gameobject(30,30),hp(totalhp),radius(5),speed(6)
 {
 	pos.x = SCREEN_WIDTH/2;
 	pos.y = 500;
@@ -69,4 +69,17 @@ void Player::Reset()
 	hp = 100;
 	pos.x = SCREEN_WIDTH / static_cast<double>(2);
 	pos.y = 500;
+}
+
+void Player::AddHp(int amount) {
+	hp += amount;
+	if (hp > totalhp)
+	{
+		hp = totalhp;
+	}
+}
+
+void Player::SubHp(int amount) {
+	hp -= amount;
+	if (hp < 0) hp = 0;   // 血量不能为负
 }

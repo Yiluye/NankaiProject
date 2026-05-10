@@ -101,6 +101,7 @@ void DanmakuGameInterface::Onenter() {
     //
     minions.clear();
     bullets.clear();
+    items.clear();
     score = 0;
     minionSpawnTimer = 0;
     minionSpawnDelay = 90;   // 初始生成间隔（帧）
@@ -116,6 +117,7 @@ void DanmakuGameInterface::Onexit() {
     boss.reset();
     minions.clear();
     bullets.clear();
+    items.clear();
     gametime = 0;
 }
 //子弹更新
@@ -131,6 +133,9 @@ void DanmakuGameInterface::RemoveInactiveGameobject() {
 
     minions.erase(std::remove_if(minions.begin(), minions.end(),
         [](const std::shared_ptr<Enemy>& e) { return !e->IsAlive(); }), minions.end());
+
+    items.erase(std::remove_if(items.begin(), items.end(),
+        [](const std::shared_ptr<Item>& i) { return !i->IsActive(); }), items.end());
 }
 //碰撞检测
 void DanmakuGameInterface::checkCollisions() {
@@ -144,6 +149,9 @@ void DanmakuGameInterface::checkCollisions() {
             if (dx * dx + dy * dy < minDist * minDist) {
                 player->TakeDamage(10);
                 bullet->Deactivate();
+                
+                PlaySound(_T("res/baka.wav"), NULL, SND_ASYNC | SND_FILENAME);
+
                 if (!player->IsAlive()) {
                     gameRunning = false;
                 }
@@ -183,6 +191,17 @@ void DanmakuGameInterface::checkCollisions() {
                     bullet->Deactivate();
                     if (!minion->IsAlive()) {
                         score += 100;
+
+                        // 随机掉落红色或蓝色 P 点
+                        ItemType powerType;
+                        if (Random(0, 2) == 0) {
+                            powerType = ItemType::POWER_RED;
+                        }
+                        else {
+                            powerType = ItemType::POWER_BLUE;
+                        }
+                        items.push_back(std::make_shared<Item>(
+                            minion->Getx(), minion->Gety(), powerType, 1));
                     }
                 }
             }
@@ -231,11 +250,11 @@ void DanmakuGameInterface::Update() {
     {
         //双发子弹
         bullets.push_back(std::make_shared<Bullet>(
-            player->Getx()-player->GetRadius()-2, player->Gety() - 15, 0, -9, 8,
-            Camp::PLAYER,BulletColor::BTRED));
+            player->Getx() - player->GetRadius() - 2, player->Gety() - 15, 0, -9, 8,
+            Camp::PLAYER, BulletColor::BTRED));
         bullets.push_back(std::make_shared< Bullet>(
-            player->Getx()+player->GetRadius()+2, player->Gety() - 15, 0, -9, 8,
-            Camp::PLAYER,BulletColor::BTRED));
+            player->Getx() + player->GetRadius() + 2, player->Gety() - 15, 0, -9, 8,
+            Camp::PLAYER, BulletColor::BTRED));
 
         PlaySound(_T("res/shoot.wav"), NULL, SND_ASYNC | SND_FILENAME);
 
@@ -244,31 +263,31 @@ void DanmakuGameInterface::Update() {
     }
 
     //Boss射击更新
-    if (boss && boss->IsAlive()) 
+    if (boss && boss->IsAlive())
     {
         boss->Update();
         boss->Shoot(bullets, player->Getx(), player->Gety());
     }
-    else if (boss && !boss->IsAlive()) 
+    else if (boss && !boss->IsAlive())
     {
         //Boss死亡直接结束游戏
         gameRunning = false;
     }
 
     //生成小怪
-    if (boss && boss->IsAlive()) 
+    if (boss && boss->IsAlive())
     {
-        if (minionSpawnTimer <= 0) 
+        if (minionSpawnTimer <= 0)
         {
             // 随机位置（屏幕上半区）
             double randX = Random(40.0, GAME_AREA_RIGHT - 40.0);
-            double randY = Random(30.0, 150.0);
+            double randY = Random(30.0, 250.0);
             EnemyMove move = (Random(0, 2) == 0) ? EnemyMove::LEFT : EnemyMove::RIGHT;
             minions.push_back(std::make_shared<Enemy>(randX, randY, move));
             //更新小怪生成冷却
             minionSpawnTimer = minionSpawnDelay;
         }
-        else 
+        else
         {
             minionSpawnTimer--;
         }
@@ -281,18 +300,30 @@ void DanmakuGameInterface::Update() {
         int t = ::gametime / zhenpermiao;  // 当前秒数
 
         if (t < 5) {
-            minion->SetBulletType(EnemyBulletType::LASER);
-        }
-        else if (t < 10) {
-            minion->SetBulletType(EnemyBulletType::SCATTER);
-        }
-        else if (t < 15) {
             minion->SetBulletType(EnemyBulletType::RING);
         }
-        else if (t < 20) {
+        else if (t < 15) {
+            minion->SetBulletType(EnemyBulletType::SCATTER);
+        }
+        else if (t < 25) {
+            minion->SetBulletType(EnemyBulletType::SHUTTLE);
+        }
+        else if (t < 35) {
             minion->SetBulletType(EnemyBulletType::LASER);
         }
-        else if (t < 30) {
+        else if (t < 45) {
+            minion->SetBulletType(EnemyBulletType::SHUTTLE);  // 梭形弹幕
+        }
+        else if (t < 55) {
+            minion->SetBulletType(EnemyBulletType::RING);
+        }
+        else if (t < 55) {
+            minion->SetBulletType(EnemyBulletType::SCATTER);
+        }
+        else if (t < 65) {
+            minion->SetBulletType(EnemyBulletType::LASER);
+        }
+        else if (t < 75) {
             minion->SetBulletType(EnemyBulletType::SCATTER);
         }
         else {
@@ -336,20 +367,55 @@ void DanmakuGameInterface::Update() {
 
             case EnemyBulletType::LASER:    // 直线快速激光
                 if (len > 0.1) {
-                    double vx = dx / len * 8;  // 速度更快
+                    double vx = dx / len * 8;
                     double vy = dy / len * 8;
                     bullets.push_back(std::make_shared<Bullet>(
                         minion->Getx(), minion->Gety(), vx, vy, 8, Camp::ENEMY, BulletColor::BTYELLOW));
                 }
                 break;
+
+            case EnemyBulletType::SHUTTLE:  // 梭形弹幕
+            {
+                if (len > 0.1) {
+                    double angle = atan2(dy, dx);
+                    double vx = cos(angle) * 5;
+                    double vy = sin(angle) * 5;
+                    bullets.push_back(std::make_shared<Bullet>(
+                        minion->Getx(), minion->Gety(), vx, vy,
+                        12, 4, angle, Camp::ENEMY));
+                }
+                break;
             }
+            }  // switch 结束
 
             minion->ResetShootCooldown();
         }
-    }
+    }  // for 循环结束
 
     //更新所有子弹
     updateBullets();
+
+    // 更新道具
+    for (auto& item : items) {
+        item->Update();
+    }
+
+    // 玩家拾取道具
+    for (auto& item : items) {
+        if (!item->IsActive()) continue;
+        double dx = player->Getx() - item->Getx();
+        double dy = player->Gety() - item->Gety();
+        double minDist = player->GetRadius() + 8;
+        if (dx * dx + dy * dy < minDist * minDist) {
+            if (item->GetType() == ItemType::POWER_RED) {
+                player->AddHp(10);
+            }
+            else if (item->GetType() == ItemType::POWER_BLUE) {
+                score += 10;
+            }
+            item->Collect();
+        }
+    }
 
     // 碰撞检测
     checkCollisions();
@@ -383,6 +449,10 @@ void DanmakuGameInterface::Draw() {
 
     for (const auto& bullet : bullets) {
         bullet->Draw();
+    }
+
+    for (const auto& item : items) {
+        item->Draw();
     }
 
     // ========== 绘制右侧 UI 面板 ==========
