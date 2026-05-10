@@ -56,13 +56,13 @@ void Boss::Shoot(std::vector<std::shared_ptr<Bullet>>& bullets, double playerX, 
         static double rotation = 0.0;
         rotation += 0.2;  // 每轮增加约11.5度，非36°的倍数
         for (int i = 0; i < numBullets; ++i) {
-            double angle = rotation + i * 2 * pai / numBullets;
+            double angle = rotation - i * 2 * pai / numBullets;
             double vx = sin(angle) * 5;
             double vy = cos(angle) * 5;
             bullets.push_back(std::make_shared<Bullet>(pos.x, pos.y , vx, vy, 8, 
                 Camp::ENEMY,BulletColor::BTRED));
         }
-        shootTimer = 5;
+        shootTimer = 2;
         break;
     }
     case 2: //角度变化散射
@@ -74,7 +74,7 @@ void Boss::Shoot(std::vector<std::shared_ptr<Bullet>>& bullets, double playerX, 
         double vx = sin(angle) * 4; 
         double vy = cos(angle) * 4; 
          bullets.push_back(std::make_shared<Bullet>(pos.x, pos.y, vx, vy, 8,
-             Camp::ENEMY, BulletColor::BTBLUE));
+             Camp::ENEMY, BulletColor::BTCYAN));
         shootTimer = 1;
         break;
     }
@@ -94,7 +94,7 @@ void Boss::Shoot(std::vector<std::shared_ptr<Bullet>>& bullets, double playerX, 
                 Camp::ENEMY, BulletColor::BTBLUE));
         }
         else {
-            bullets.push_back(std::make_shared<Bullet>(pos.x, pos.y + radius, 0, 6, 8,
+            bullets.push_back(std::make_shared<Bullet>(pos.x, pos.y, 0, 6, 8,
                 Camp::ENEMY, BulletColor::BTRED));
         }
         shootTimer = 1;
@@ -114,7 +114,7 @@ void Boss::Shoot(std::vector<std::shared_ptr<Bullet>>& bullets, double playerX, 
             double vx = sin(angle) * 8;
             double vy = cos(angle) * 8;
             bullets.push_back(std::make_shared<Bullet>(pos.x, pos.y + radius, vx, vy, 8,
-                Camp::ENEMY, BulletColor::BTRED));
+                Camp::ENEMY, BulletColor::BTPINK));
        
         shootTimer = 1;
         break;
@@ -129,14 +129,14 @@ void Boss::Shoot(std::vector<std::shared_ptr<Bullet>>& bullets, double playerX, 
             double angle = baseAngle + i * (1 * 3.14159 / numDirections);
             double vx = sin(angle) * 5;
             double vy = cos(angle) * 5;
-            bullets.push_back(std::make_shared<Bullet>(pos.x, pos.y + radius, vx, vy, 8,
-                Camp::ENEMY, BulletColor::BTRED));
+            bullets.push_back(std::make_shared<Bullet>(pos.x, pos.y, vx, vy, 8,
+                Camp::ENEMY, BulletColor::BTCYAN));
         }
         shootTimer = 1;
         break;
     }
-
-    case 6: // 旋转扇形射击
+    // 旋转扇形射击
+    case 6: 
     {
         static double baseAngle = 0.0;  // 或者用成员变量 BaseRotation
         baseAngle += 0.2618;
@@ -152,7 +152,8 @@ void Boss::Shoot(std::vector<std::shared_ptr<Bullet>>& bullets, double playerX, 
         shootTimer = 5;
         break;
     }
-    case 7: // 多方向梭形弹幕（8 方向，梭形指向径向）
+    // 多方向梭形弹幕（8 方向，梭形指向径向）
+    case 7: 
     {
         int numDirections = 25;          // 8 个方向
         double speed = 6.0;

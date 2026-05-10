@@ -10,7 +10,8 @@ enum EnemyBulletType {
     NORMAL,     //狙
     SCATTER,    //散射
     RING,       //环形
-    LASER       //直线激光（快速）
+    LASER,     //直线激光（快速）
+    SHUTTLE
 };
 enum  EnemyMove {
     LEFT,     // 圆形

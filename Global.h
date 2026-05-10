@@ -35,10 +35,13 @@ extern IMAGE imgMenu;   // 主界面背景
 extern IMAGE imgGame;   // 游戏界面背景
 
 extern IMAGE imgBoss;   // Boss 图片
+extern IMAGE imgEnemy;   // 小怪图片
+extern IMAGE imgPlayer;  //玩家图片
 
 // 全局区域定义
 extern const int GAME_AREA_WIDTH;   // 游戏区域宽度（750）
 extern const int UI_AREA_WIDTH;     // UI 区域宽度（250）
 extern const int GAME_AREA_LEFT;    // 游戏区域左边界（0）
 extern const int GAME_AREA_RIGHT;   // 游戏区域右边界（750）
+extern IMAGE imgPlayerBullet;   // 玩家子弹精灵表
 #endif

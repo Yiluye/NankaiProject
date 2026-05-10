@@ -27,15 +27,20 @@ void Player::Update()
 	if (pos.y > SCREEN_HEIGHT - radius) { pos.y = SCREEN_HEIGHT - radius; }
 
 }
-void Player::Draw()
-{
-	setfillcolor(BLUE);
-	fillcircle((int)pos.x, (int)pos.y, radius);
+void Player::Draw() {
+	// 将 60×60 的图片缩放到 32×32 绘制
+	int drawSize = 32;
+	int drawX = (int)(pos.x - drawSize / 2);
+	int drawY = (int)(pos.y - drawSize / 2-12);
+	putimage(drawX, drawY, drawSize, drawSize, &imgPlayer, 0, 0, SRCCOPY);
 
-	// 血条
-	setfillcolor(RED);
-	fillrectangle((int)(pos.x - radius), (int)(pos.y - radius - 8),
-		(int)(pos.x - radius + (hp * radius * 2 / 100)), (int)(pos.y - radius - 3));
+	setfillcolor(WHITE);
+	setlinecolor(WHITE);
+	fillcircle((int)pos.x, (int)pos.y, 4);  // radius = 16
+	// 血条（按 32×32 调整位置）
+	//setfillcolor(RED);
+	//fillrectangle((int)(pos.x - 16), (int)(pos.y - 22),
+		//(int)(pos.x - 16 + (hp * 32 / 100)), (int)(pos.y - 18));
 }
 
 int Player::GetHp() const

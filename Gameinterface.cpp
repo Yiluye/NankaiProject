@@ -1,4 +1,4 @@
-#include "Interface.h"
+ï»¿#include "Interface.h"
 #include "Application.h"
 #include "Global.h"
 #include "messege.h"
@@ -9,70 +9,91 @@
 #include "Random.h"
 #include <algorithm>
 
-#include <mmsystem.h>      // ¶àÃ½Ìåº¯Êı
-#pragma comment(lib, "winmm.lib")  // Á´½Ó¶àÃ½Ìå¿â
+#include <mmsystem.h>      // å¤šåª’ä½“å‡½æ•°
+#pragma comment(lib, "winmm.lib")  // é“¾æ¥å¤šåª’ä½“åº“
 
-//¹¹Ôìº¯Êı
+//æ„é€ å‡½æ•°
 DanmakuGameInterface::DanmakuGameInterface()
     : Interface(L"DanmakuGame"), score(0), gameRunning(true), shootCooldown(0),
       minionSpawnTimer(0), minionSpawnDelay(90), currentEventIndex(0) {
-    initEvents();   // ³õÊ¼»¯ÊÂ¼şÁĞ±í
+    initEvents();   // åˆå§‹åŒ–äº‹ä»¶åˆ—è¡¨
 }
 
 void DanmakuGameInterface::initEvents() {
-    // µÚ 0 Ö¡£¨ÓÎÏ·¿ªÊ¼£©
+    // ç¬¬ 0 å¸§ï¼ˆæ¸¸æˆå¼€å§‹ï¼‰
     eventList.push_back({ 0, [this]() {
-        // ÉèÖÃ³õÊ¼ Boss Ä£Ê½
-        if (boss) {
-            boss->SetPattern(0);
-        }
-    } });
-
-    // 10 Ãë£¨600 Ö¡£©ºó
-    eventList.push_back({ 5*zhenpermiao, [this]() {
-        if (boss) {
-            boss->SetPattern(1);           // ÇĞ»» Boss µ¯Ä»Ä£Ê½
-            minionSpawnDelay = 60;          // Ğ¡¹ÖÉú³É¸ü¿ì
-        }
-    } });
-
-    // 20 Ãë£¨1200 Ö¡£©ºó
-    eventList.push_back({ 10*zhenpermiao, [this]() {
+        // è®¾ç½®åˆå§‹ Boss æ¨¡å¼
         if (boss) {
             boss->SetPattern(2);
+        }
+    } });
+
+    // 10 ç§’å
+    eventList.push_back({ 10*zhenpermiao, [this]() {
+        if (boss) {
+            boss->SetPattern(6);           // åˆ‡æ¢ Boss å¼¹å¹•æ¨¡å¼
+            minionSpawnDelay = 60;          // å°æ€ªç”Ÿæˆæ›´å¿«
+        }
+    } });
+    // 20 ç§’å
+    eventList.push_back({ 20 * zhenpermiao, [this]() {
+        if (boss) {
+            boss->SetPattern(4);           // åˆ‡æ¢ Boss å¼¹å¹•æ¨¡å¼
+            minionSpawnDelay = 60;          // å°æ€ªç”Ÿæˆæ›´å¿«
+        }
+    } });
+
+    // 30 ç§’å
+    eventList.push_back({ 30*zhenpermiao, [this]() {
+        if (boss) {
+            boss->SetPattern(5);
             minionSpawnDelay = 45;
         }
     } });
 
-    // 30 Ãë£¨1800 Ö¡£©ºó
-    eventList.push_back({ 15*zhenpermiao, [this]() {
+    // 40 ç§’å
+    eventList.push_back({ 40*zhenpermiao, [this]() {
         if (boss) {
             boss->SetPattern(3);
             minionSpawnDelay = 30;
         }
     } });
 
-    // 40 Ãë£¨2400 Ö¡£©ºó - Boss ¿ñ±©
-    eventList.push_back({ 20*zhenpermiao, [this]() {
+    // 50 ç§’å - Boss ç‹‚æš´
+    eventList.push_back({ 50*zhenpermiao, [this]() {
         if (boss) {
-            boss->SetPattern(6);           // ËóĞÎµ¯Ä»Ä£Ê½
-            boss->SetShootTimer(5);         // Ëõ¶ÌÀäÈ´
+            boss->SetPattern(6);           // æ¢­å½¢å¼¹å¹•æ¨¡å¼
+            boss->SetShootTimer(0);         // ç¼©çŸ­å†·å´
         }
     } });
+    // 60 ç§’å - Boss ç‹‚æš´
+    eventList.push_back({ 60 * zhenpermiao, [this]() {
+        if (boss) {
+            boss->SetPattern(7);           // æ¢­å½¢å¼¹å¹•æ¨¡å¼
+            boss->SetShootTimer(5);         // ç¼©çŸ­å†·å´
+        }
+    } });
+    // 70 ç§’å - Boss ç‹‚æš´
+    eventList.push_back({ 70 * zhenpermiao, [this]() {
+       if (boss) {
+           boss->SetPattern(1);           // æ¢­å½¢å¼¹å¹•æ¨¡å¼
+           boss->SetShootTimer(5);         // ç¼©çŸ­å†·å´
+       }
+   } });
 
-    // 60 Ãë£¨3600 Ö¡£©ºó - ÓÎÏ·Ê¤Àû»ò½øÈë¶ş½×¶Î
-    eventList.push_back({ 25*zhenpermiao, [this]() {
-        // ¿ÉÒÔÏÔÊ¾Ê¤ÀûÎÄ×Ö£¬»òÕßÔÚÏÂÒ»¸öÊÂ¼şÖĞ½áÊøÓÎÏ·
-        gameRunning = false;  // Ê¤Àû½áÊø
+    // 70 ç§’å - æ¸¸æˆèƒœåˆ©æˆ–è¿›å…¥äºŒé˜¶æ®µ
+    eventList.push_back({ 80*zhenpermiao, [this]() {
+        // å¯ä»¥æ˜¾ç¤ºèƒœåˆ©æ–‡å­—ï¼Œæˆ–è€…åœ¨ä¸‹ä¸€ä¸ªäº‹ä»¶ä¸­ç»“æŸæ¸¸æˆ
+        gameRunning = false;  // èƒœåˆ©ç»“æŸ
     } });
 }
 
-//ÓÉÖÇÄÜÖ¸Õë¹ÜÀíÃ»±ØÒªÊÖ¶¯ÊÍ·Å
+//ç”±æ™ºèƒ½æŒ‡é’ˆç®¡ç†æ²¡å¿…è¦æ‰‹åŠ¨é‡Šæ”¾
 DanmakuGameInterface::~DanmakuGameInterface() {
 }
-//½øÈë³õÊ¼»¯
-//1¡¢ÉèÖÃÍæ¼ÒºÍ¹ÖÎïÎ»ÖÃ
-//2¡¢Çå³şÉÏ¾Ö²ĞÁô
+//è¿›å…¥åˆå§‹åŒ–
+//1ã€è®¾ç½®ç©å®¶å’Œæ€ªç‰©ä½ç½®
+//2ã€æ¸…æ¥šä¸Šå±€æ®‹ç•™
 void DanmakuGameInterface::Onenter() {
     gametime = 0;
     player = std::make_shared<Player>();
@@ -82,7 +103,7 @@ void DanmakuGameInterface::Onenter() {
     bullets.clear();
     score = 0;
     minionSpawnTimer = 0;
-    minionSpawnDelay = 90;   // ³õÊ¼Éú³É¼ä¸ô£¨Ö¡£©
+    minionSpawnDelay = 90;   // åˆå§‹ç”Ÿæˆé—´éš”ï¼ˆå¸§ï¼‰
     gameRunning = true;
     shootCooldown = 0;
     mciSendString(_T("open \"res/bgm.mp3\" alias game_bgm"), NULL, 0, NULL);
@@ -97,13 +118,13 @@ void DanmakuGameInterface::Onexit() {
     bullets.clear();
     gametime = 0;
 }
-//×Óµ¯¸üĞÂ
+//å­å¼¹æ›´æ–°
 void DanmakuGameInterface::updateBullets() {
     for (auto& bullet : bullets) {
         bullet->Update();
     }
 }
-//É¾³ıÊ§»îµÄÓÎÏ·¶ÔÏó£¨µĞÈËºÍ×Óµ¯£©
+//åˆ é™¤å¤±æ´»çš„æ¸¸æˆå¯¹è±¡ï¼ˆæ•Œäººå’Œå­å¼¹ï¼‰
 void DanmakuGameInterface::RemoveInactiveGameobject() {
     bullets.erase(std::remove_if(bullets.begin(), bullets.end(),
         [](const std::shared_ptr<Bullet>& b) { return !b->IsActive(); }), bullets.end());
@@ -111,9 +132,9 @@ void DanmakuGameInterface::RemoveInactiveGameobject() {
     minions.erase(std::remove_if(minions.begin(), minions.end(),
         [](const std::shared_ptr<Enemy>& e) { return !e->IsAlive(); }), minions.end());
 }
-//Åö×²¼ì²â
+//ç¢°æ’æ£€æµ‹
 void DanmakuGameInterface::checkCollisions() {
-    // Íæ¼ÒÓëµĞ·½×Óµ¯Åö×²£¨ËùÓĞµĞ·½×Óµ¯£©
+    // ç©å®¶ä¸æ•Œæ–¹å­å¼¹ç¢°æ’ï¼ˆæ‰€æœ‰æ•Œæ–¹å­å¼¹ï¼‰
     for (auto& bullet : bullets) {
         if (!bullet->IsActive()) continue;
         if (bullet->GetCamp() == Camp::ENEMY) {
@@ -130,7 +151,7 @@ void DanmakuGameInterface::checkCollisions() {
         }
     }
 
-    //BossÊÜ»÷
+    //Bosså—å‡»
     if (boss && boss->IsAlive()) {
         for (auto& bullet : bullets) {
             if (!bullet->IsActive()) continue;
@@ -142,14 +163,14 @@ void DanmakuGameInterface::checkCollisions() {
                     boss->TakeDamage(10);
                     bullet->Deactivate();
                     if (!boss->IsAlive()) {
-                        score += 2000;   // »÷°Ü Boss ½±Àø
+                        score += 2000;   // å‡»è´¥ Boss å¥–åŠ±
                     }
                 }
             }
         }
     }
 
-    //Ğ¡¹ÖÊÜ»÷
+    //å°æ€ªå—å‡»
     for (auto& minion : minions) {
         for (auto& bullet : bullets) {
             if (!bullet->IsActive()) continue;
@@ -168,21 +189,21 @@ void DanmakuGameInterface::checkCollisions() {
         }
     }
 }
-//ÅĞ¶ÏÊÂ¼ş
+//åˆ¤æ–­äº‹ä»¶
 void DanmakuGameInterface::checkEvents() {
     while (currentEventIndex < eventList.size() &&
         eventList[currentEventIndex].first <= gametime) {
-        // Ö´ĞĞ¶ÔÓ¦µÄÊÂ¼şº¯Êı
+        // æ‰§è¡Œå¯¹åº”çš„äº‹ä»¶å‡½æ•°
         eventList[currentEventIndex].second();
         currentEventIndex++;
     }
 }
-//¸üĞÂ
+//æ›´æ–°
 void DanmakuGameInterface::Update() {
-    //Ôö¼ÓÓÎÏ·Ê±¼ä
+    //å¢åŠ æ¸¸æˆæ—¶é—´
     gametime++;
 
-    // ESC ·µ»ØÖ÷²Ëµ¥
+    // ESC è¿”å›ä¸»èœå•
     if (Iskeydown(VK_ESCAPE)) {
         Getapplication()->Changeinterface(L"Main");
         gametime = 0;
@@ -190,7 +211,7 @@ void DanmakuGameInterface::Update() {
     }
 
     if (!gameRunning) {
-        // ÓÎÏ·½áÊø£¬°´ R ÖØĞÂ¿ªÊ¼
+        // æ¸¸æˆç»“æŸï¼ŒæŒ‰ R é‡æ–°å¼€å§‹
         if (Iskeydown('R')) {
             gametime = 0;
             Onenter();
@@ -200,29 +221,29 @@ void DanmakuGameInterface::Update() {
 
     checkEvents();
 
-    //Íæ¼ÒÎ»ÖÃ¸üĞÂ
+    //ç©å®¶ä½ç½®æ›´æ–°
     player->Update();
 
-    //Íæ¼ÒÉä»÷¸üĞÂ
+    //ç©å®¶å°„å‡»æ›´æ–°
     if (shootCooldown > 0) shootCooldown--;
-    //Éä»÷
+    //å°„å‡»
     if ((Iskeydown('Z') || Iskeydown(VK_SPACE)) && shootCooldown == 0)
     {
-        //Ë«·¢×Óµ¯
+        //åŒå‘å­å¼¹
         bullets.push_back(std::make_shared<Bullet>(
-            player->Getx()-player->GetRadius(), player->Gety() - 15, 0, -9, 4,
+            player->Getx()-player->GetRadius()-2, player->Gety() - 15, 0, -9, 8,
             Camp::PLAYER,BulletColor::BTRED));
         bullets.push_back(std::make_shared< Bullet>(
-            player->Getx()+player->GetRadius(), player->Gety() - 15, 0, -9, 4,
+            player->Getx()+player->GetRadius()+2, player->Gety() - 15, 0, -9, 8,
             Camp::PLAYER,BulletColor::BTRED));
 
         PlaySound(_T("res/shoot.wav"), NULL, SND_ASYNC | SND_FILENAME);
 
-        //ÖØÖÃÉä»÷ÀäÈ´
+        //é‡ç½®å°„å‡»å†·å´
         shootCooldown = SHOOT_DELAY;
     }
 
-    //BossÉä»÷¸üĞÂ
+    //Bosså°„å‡»æ›´æ–°
     if (boss && boss->IsAlive()) 
     {
         boss->Update();
@@ -230,23 +251,21 @@ void DanmakuGameInterface::Update() {
     }
     else if (boss && !boss->IsAlive()) 
     {
-        //BossËÀÍöÖ±½Ó½áÊøÓÎÏ·
+        //Bossæ­»äº¡ç›´æ¥ç»“æŸæ¸¸æˆ
         gameRunning = false;
     }
 
-    //Éú³ÉĞ¡¹Ö
+    //ç”Ÿæˆå°æ€ª
     if (boss && boss->IsAlive()) 
     {
         if (minionSpawnTimer <= 0) 
         {
-            // Ëæ»úÎ»ÖÃ£¨ÆÁÄ»ÉÏ°ëÇø£©
+            // éšæœºä½ç½®ï¼ˆå±å¹•ä¸ŠåŠåŒºï¼‰
             double randX = Random(40.0, GAME_AREA_RIGHT - 40.0);
             double randY = Random(30.0, 150.0);
-            //minions.push_back(std::make_shared<Enemy>(randX, randY,0));
             EnemyMove move = (Random(0, 2) == 0) ? EnemyMove::LEFT : EnemyMove::RIGHT;
             minions.push_back(std::make_shared<Enemy>(randX, randY, move));
-            //minions.push_back(std::make_shared<Enemy>(randX, randY, EnemyMove::LEFT));
-            //¸üĞÂĞ¡¹ÖÉú³ÉÀäÈ´
+            //æ›´æ–°å°æ€ªç”Ÿæˆå†·å´
             minionSpawnTimer = minionSpawnDelay;
         }
         else 
@@ -255,19 +274,26 @@ void DanmakuGameInterface::Update() {
         }
     }
 
-    //¸üĞÂĞ¡¹ÖÉä»÷
+    //æ›´æ–°å°æ€ªå°„å‡»
     for (auto& minion : minions) {
         minion->Update();
 
-        // ¸ù¾İÓÎÏ·Ê±¼ä¶¯Ì¬ÉèÖÃĞ¡¹Öµ¯Ä»ÀàĞÍ
-        if (::gametime > 5*zhenpermiao && ::gametime < 10*zhenpermiao) {
+        int t = ::gametime / zhenpermiao;  // å½“å‰ç§’æ•°
+
+        if (t < 5) {
+            minion->SetBulletType(EnemyBulletType::LASER);
+        }
+        else if (t < 10) {
             minion->SetBulletType(EnemyBulletType::SCATTER);
         }
-        else if (::gametime >= 15*zhenpermiao && ::gametime < 20*zhenpermiao) {
+        else if (t < 15) {
             minion->SetBulletType(EnemyBulletType::RING);
         }
-        else if (::gametime >= 20*zhenpermiao) {
+        else if (t < 20) {
             minion->SetBulletType(EnemyBulletType::LASER);
+        }
+        else if (t < 30) {
+            minion->SetBulletType(EnemyBulletType::SCATTER);
         }
         else {
             minion->SetBulletType(EnemyBulletType::NORMAL);
@@ -279,41 +305,41 @@ void DanmakuGameInterface::Update() {
             double len = sqrt(dx * dx + dy * dy);
 
             switch (minion->GetBulletType()) {
-            case EnemyBulletType::NORMAL:  // ÆÕÍ¨×Ô»ú¾Ñ
+            case EnemyBulletType::NORMAL:  // æ™®é€šè‡ªæœºç‹™
                 if (len > 0.1) {
                     double vx = dx / len * 4;
                     double vy = dy / len * 4;
                     bullets.push_back(std::make_shared<Bullet>(
-                        minion->Getx(), minion->Gety(), vx, vy, 4, Camp::ENEMY, BulletColor::BTRED));
+                        minion->Getx(), minion->Gety(), vx, vy, 8, Camp::ENEMY, BulletColor::BTRED));
                 }
                 break;
 
-            case EnemyBulletType::SCATTER:  // É¢Éä£¨3 ·½Ïò£©
+            case EnemyBulletType::SCATTER:  // æ•£å°„ï¼ˆ3 æ–¹å‘ï¼‰
                 for (int i = -1; i <= 1; ++i) {
                     double angle = atan2(dy, dx) + i * 0.3;
                     double vx = cos(angle) * 4;
                     double vy = sin(angle) * 4;
                     bullets.push_back(std::make_shared<Bullet>(
-                        minion->Getx(), minion->Gety(), vx, vy, 4, Camp::ENEMY, BulletColor::BTYELLOW));
+                        minion->Getx(), minion->Gety(), vx, vy, 8, Camp::ENEMY, BulletColor::BTYELLOW));
                 }
                 break;
 
-            case EnemyBulletType::RING:     // »·ĞÎ£¨8 ·½Ïò£©
+            case EnemyBulletType::RING:     // ç¯å½¢ï¼ˆ8 æ–¹å‘ï¼‰
                 for (int i = 0; i < 8; ++i) {
                     double angle = 2 * 3.14159 * i / 8;
                     double vx = cos(angle) * 3;
                     double vy = sin(angle) * 3;
                     bullets.push_back(std::make_shared<Bullet>(
-                        minion->Getx(), minion->Gety(), vx, vy, 3, Camp::ENEMY, BulletColor::BTBLUE));
+                        minion->Getx(), minion->Gety(), vx, vy, 8, Camp::ENEMY, BulletColor::BTBLUE));
                 }
                 break;
 
-            case EnemyBulletType::LASER:    // Ö±Ïß¿ìËÙ¼¤¹â
+            case EnemyBulletType::LASER:    // ç›´çº¿å¿«é€Ÿæ¿€å…‰
                 if (len > 0.1) {
-                    double vx = dx / len * 8;  // ËÙ¶È¸ü¿ì
+                    double vx = dx / len * 8;  // é€Ÿåº¦æ›´å¿«
                     double vy = dy / len * 8;
                     bullets.push_back(std::make_shared<Bullet>(
-                        minion->Getx(), minion->Gety(), vx, vy, 5, Camp::ENEMY, BulletColor::BTYELLOW));
+                        minion->Getx(), minion->Gety(), vx, vy, 8, Camp::ENEMY, BulletColor::BTYELLOW));
                 }
                 break;
             }
@@ -322,81 +348,165 @@ void DanmakuGameInterface::Update() {
         }
     }
 
-    //¸üĞÂËùÓĞ×Óµ¯
+    //æ›´æ–°æ‰€æœ‰å­å¼¹
     updateBullets();
 
-    // Åö×²¼ì²â
+    // ç¢°æ’æ£€æµ‹
     checkCollisions();
 
-    //É¾³ıÀ¬»ø
+    //åˆ é™¤åƒåœ¾
     RemoveInactiveGameobject();
 
-    //¼ì²éÍæ¼ÒÊÇ·ñËÀÍö
+    //æ£€æŸ¥ç©å®¶æ˜¯å¦æ­»äº¡
     if (!player->IsAlive()) {
         gameRunning = false;
     }
 }
-//»æ»­
+//ç»˜ç”»
 void DanmakuGameInterface::Draw() {
-    // ÇåÆÁ£¨ÈôÓĞ±³¾°Í¼¿ÉÔÚ´Ë»æÖÆ£©
+    // æ¸…å±
     cleardevice();
 
-    // »æÖÆ±³¾°£¨¼ÙÉè±³¾°Í¼ÒÑËõ·Åµ½ SCREEN_WIDTH ¡Á SCREEN_HEIGHT£©
+    // ç»˜åˆ¶æ¸¸æˆèƒŒæ™¯ï¼ˆå·¦ä¾§æ¸¸æˆåŒºåŸŸï¼‰
     putimage(0, 0, &imgGame);
 
-    // »æÖÆ Boss£¨Èç¹û´æ»î£©
+    // ========== ç»˜åˆ¶æ¸¸æˆå¯¹è±¡ ==========
     if (boss && boss->IsAlive()) {
         boss->Draw();
     }
 
-    // »æÖÆĞ¡¹Ö
     for (const auto& minion : minions) {
         minion->Draw();
     }
 
-    // »æÖÆÍæ¼Ò
     player->Draw();
 
-    // »æÖÆ×Óµ¯
     for (const auto& bullet : bullets) {
         bullet->Draw();
     }
 
-    // ¿ÉÑ¡£º»æÖÆ·Ö¸ôÏßÇø·ÖÓÎÏ·ÇøÓòºÍUIÇøÓò
-    //setlinecolor(WHITE);
-    //line(GAME_AREA_RIGHT, 0, GAME_AREA_RIGHT, SCREEN_HEIGHT);
+    // ========== ç»˜åˆ¶å³ä¾§ UI é¢æ¿ ==========
+    int uiX = GAME_AREA_RIGHT;
+    int uiWidth = SCREEN_WIDTH - GAME_AREA_RIGHT;
 
-    // »æÖÆ UI£¨ÏÔÊ¾ÔÚÓÒ²àÇøÓò£©
-    settextcolor(WHITE);
+    // 1. ç»˜åˆ¶ UI èƒŒæ™¯ï¼ˆåŠé€æ˜æˆ–çº¯è‰²é¢æ¿ï¼‰
+    setfillcolor(RGB(30, 30, 50));      // æ·±è“ç°è‰²èƒŒæ™¯
+    setlinecolor(RGB(100, 100, 150));   // è¾¹æ¡†é¢œè‰²
+    fillrectangle(uiX, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
+    rectangle(uiX, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
+
+    // 2. ç»˜åˆ¶æ ‡é¢˜è£…é¥°æ¡
+    setfillcolor(RGB(200, 100, 50));     // æ©™è‰²è£…é¥°æ¡
+    fillrectangle(uiX + 5, 5, SCREEN_WIDTH - 5, 35);
+
+    // 3. æ ‡é¢˜æ–‡å­—
+    settextcolor(RGB(255, 255, 200));
+    settextstyle(20, 0, _T("å¾®è½¯é›…é»‘"));
+    outtextxy(uiX + 15, 8, _T("=== æ¸¸æˆçŠ¶æ€ ==="));
+
+    // 4. UI å†…å®¹åŒºåŸŸèµ·å§‹ä½ç½®
+    int startY = 60;
+    int lineHeight = 35;
+
+    // è®¾ç½®å­—ä½“å¤§å°
+    settextstyle(18, 0, _T("å¾®è½¯é›…é»‘"));
+
+    // 5. åˆ†æ•°ï¼ˆé‡‘è‰²é«˜äº®ï¼‰
     TCHAR str[128];
+    settextcolor(RGB(255, 215, 0));      // é‡‘è‰²
+    _stprintf_s(str, _T("â˜… å¾—åˆ†"));
+    outtextxy(uiX + 15, startY, str);
+    settextcolor(RGB(255, 255, 255));    // ç™½è‰²
+    _stprintf_s(str, _T("%d"), score);
+    outtextxy(uiX + 120, startY, str);
 
-    int uiX = GAME_AREA_RIGHT + 10;  // UI ÆğÊ¼ X ×ø±ê
-    int uiY = 10;
+    // 6. ç©å®¶è¡€é‡ï¼ˆçº¢è‰²ï¼‰
+    startY += lineHeight;
+    settextcolor(RGB(255, 100, 100));    // æµ…çº¢è‰²
+    _stprintf_s(str, _T("â¤ ç”Ÿå‘½"));
+    outtextxy(uiX + 15, startY, str);
+    settextcolor(RGB(255, 255, 255));
+    _stprintf_s(str, _T("%d / 100"), player->GetHp());
+    outtextxy(uiX + 120, startY, str);
 
-    _stprintf_s(str, _T("Score: %d"), score);
-    outtextxy(uiX, uiY, str);
-    uiY += 30;
+    // 7. å°æ€ªæ•°é‡ï¼ˆç»¿è‰²ï¼‰
+    startY += lineHeight;
+    settextcolor(RGB(100, 255, 100));    // ç»¿è‰²
+    _stprintf_s(str, _T("ğŸ‘¾ æ•Œäººæ•°"));
+    outtextxy(uiX + 15, startY, str);
+    settextcolor(RGB(255, 255, 255));
+    _stprintf_s(str, _T("%d"), (int)minions.size());
+    outtextxy(uiX + 120, startY, str);
 
-    _stprintf_s(str, _T("HP: %d"), player->GetHp());
-    outtextxy(uiX, uiY, str);
-    uiY += 30;
+    // 8. Boss è¡€é‡ï¼ˆæ ¹æ®ç™¾åˆ†æ¯”å˜è‰²ï¼‰
+    startY += lineHeight;
+    if (boss && boss->IsAlive()) {
+        int hpPercent = boss->GetHp() * 100 / boss->GetMaxHp();
+        settextcolor(RGB(255, 150, 50));   // æ©™è‰²
+        _stprintf_s(str, _T("ğŸ‘¿ Boss"));
+        outtextxy(uiX + 15, startY, str);
 
-    _stprintf_s(str, _T("Minions: %d"), (int)minions.size());
-    outtextxy(uiX, uiY, str);
-    uiY += 30;
+        // è¡€é‡æ–‡å­—é¢œè‰²éšç™¾åˆ†æ¯”å˜åŒ–
+        if (hpPercent > 60) {
+            settextcolor(RGB(0, 255, 0));      // ç»¿è‰²
+        }
+        else if (hpPercent > 30) {
+            settextcolor(RGB(255, 200, 0));    // é»„è‰²
+        }
+        else {
+            settextcolor(RGB(255, 0, 0));      // çº¢è‰²
+        }
+        _stprintf_s(str, _T("HP: %d/%d (%.0f%%)"), boss->GetHp(), boss->GetMaxHp(), (float)hpPercent);
+        outtextxy(uiX + 90, startY, str);
 
-    if (boss) {
-        _stprintf_s(str, _T("Boss HP: %d/%d"), boss->GetHp(), boss->GetMaxHp());
-        outtextxy(uiX, uiY, str);
+        // ç»˜åˆ¶ Boss è¡€æ¡
+        startY += lineHeight - 10;
+        int barWidth = uiWidth - 30;
+        int barHeight = 12;
+        int barX = uiX + 15;
+
+        // èƒŒæ™¯æ¡ï¼ˆç°è‰²ï¼‰
+        setfillcolor(RGB(60, 60, 60));
+        fillrectangle(barX, startY, barX + barWidth, startY + barHeight);
+
+        // å‰æ™¯æ¡ï¼ˆæ ¹æ®è¡€é‡å˜è‰²ï¼‰
+        int fillWidth = barWidth * boss->GetHp() / boss->GetMaxHp();
+        COLORREF barColor;
+        if (hpPercent > 60) barColor = RGB(0, 200, 0);
+        else if (hpPercent > 30) barColor = RGB(255, 200, 0);
+        else barColor = RGB(200, 0, 0);
+        setfillcolor(barColor);
+        fillrectangle(barX, startY, barX + fillWidth, startY + barHeight);
     }
 
-    // ÓÎÏ·½áÊø»­Ãæ£¨¾ÓÖĞÔÚÕû¸ö´°¿Ú£©
+    // 9. æ¸¸æˆæ—¶é—´æ˜¾ç¤º
+    startY += lineHeight + 10;
+    settextcolor(RGB(150, 150, 200));
+    _stprintf_s(str, _T("â± æ—¶é—´: %d ç§’"), ::gametime / 60);
+    outtextxy(uiX + 15, startY, str);
+
+    // 10. æ“ä½œæç¤ºï¼ˆåº•éƒ¨ï¼‰
+    startY = SCREEN_HEIGHT - 100;
+    settextcolor(RGB(150, 150, 150));
+    settextstyle(14, 0, _T("å¾®è½¯é›…é»‘"));
+    outtextxy(uiX + 15, startY, _T("[WASD/æ–¹å‘é”®] ç§»åŠ¨"));
+    outtextxy(uiX + 15, startY + 20, _T("[Z/ç©ºæ ¼] å°„å‡»"));
+    outtextxy(uiX + 15, startY + 40, _T("[ESC] è¿”å›èœå•"));
+
+    // ========== æ¸¸æˆç»“æŸç”»é¢ ==========
     if (!gameRunning) {
-        settextstyle(40, 0, _T("ËÎÌå"));
-        outtextxy(SCREEN_WIDTH / 2 - 100, SCREEN_HEIGHT / 2 - 20, _T("GAME OVER"));
-        settextstyle(20, 0, _T("ËÎÌå"));
-        outtextxy(SCREEN_WIDTH / 2 - 80, SCREEN_HEIGHT / 2 + 30, _T("Press R to Restart"));
-        outtextxy(SCREEN_WIDTH / 2 - 80, SCREEN_HEIGHT / 2 + 60, _T("Press ESC to Menu"));
+        // åŠé€æ˜é®ç½©
+        //setfillcolor(RGB(0, 0, 0));
+        //fillrectangle(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
+
+        settextstyle(40, 0, _T("å¾®è½¯é›…é»‘"));
+        settextcolor(RGB(255, 0, 0));
+        outtextxy( GAME_AREA_RIGHT/ 2 - 100, SCREEN_HEIGHT / 2 - 60, _T("GAME OVER"));
+
+        settextstyle(20, 0, _T("å¾®è½¯é›…é»‘"));
+        settextcolor(RGB(255, 255, 255));
+        outtextxy(GAME_AREA_RIGHT / 2 - 100, SCREEN_HEIGHT / 2, _T("æŒ‰ R é”®é‡æ–°å¼€å§‹"));
+        outtextxy(GAME_AREA_RIGHT / 2 - 100, SCREEN_HEIGHT / 2 + 35, _T("æŒ‰ ESC é”®è¿”å›èœå•"));
     }
 }
 

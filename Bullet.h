@@ -13,7 +13,9 @@ enum class BulletShape {
 enum BulletColor {
     BTRED=0,
     BTBLUE,
-    BTYELLOW
+    BTYELLOW,
+    BTCYAN,
+    BTPINK
 };
 
 

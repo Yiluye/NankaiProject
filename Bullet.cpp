@@ -75,23 +75,31 @@ static POINT RotatePoint(double cx, double cy, double x, double y, double angle)
 
 void Bullet::Draw() {
 	if (shape == BulletShape::CIRCLE) {
-		// 使用贴图（从精灵表中截取）
-		int drawSize = radius * 2;   // 绘制尺寸 = 直径
+		int drawSize = radius * 2;
 		int dstX = (int)(pos.x - drawSize / 2);
 		int dstY = (int)(pos.y - drawSize / 2);
 
-		// 从精灵表中截取指定区域并绘制（球形弹幕位置：srcX=32, srcY=48）
-		if (color == BTRED)
-		{
-			putimage(dstX, dstY, drawSize, drawSize, &imgSprite, 32, 32, SRCCOPY);
+		if (camp == Camp::PLAYER) {
+			// 玩家子弹使用独立精灵表，从 (128, 16) 截取
+			putimage(dstX, dstY, drawSize, drawSize, &imgPlayerBullet, 128, 16, SRCCOPY);
 		}
-		else if (color == BTBLUE)
-		{
-			putimage(dstX, dstY, drawSize, drawSize, &imgSprite, 80, 48, SRCCOPY);
-		}
-		else if (color == BTYELLOW)
-		{
-			putimage(dstX, dstY, drawSize, drawSize, &imgSprite, 112, 32, SRCCOPY);
+		else {
+			// 敌方子弹使用原精灵表
+			if (color == BTRED) {
+				putimage(dstX, dstY, drawSize, drawSize, &imgSprite, 32, 32, SRCCOPY);
+			}
+			else if (color == BTBLUE) {
+				putimage(dstX, dstY, drawSize, drawSize, &imgSprite, 80, 48, SRCCOPY);
+			}
+			else if (color == BTCYAN) {
+				putimage(dstX, dstY, drawSize, drawSize, &imgSprite, 112, 32, SRCCOPY);
+			}
+			else if (color == BTYELLOW) {
+				putimage(dstX, dstY, drawSize, drawSize, &imgSprite, 192, 32, SRCCOPY);
+			}
+			else if (color == BTPINK) {
+				putimage(dstX, dstY, drawSize, drawSize, &imgSprite, 64, 32, SRCCOPY);
+			}
 		}
 	}
 	else if (shape == BulletShape::RECT) {

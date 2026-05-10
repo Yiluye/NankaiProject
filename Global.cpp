@@ -25,6 +25,9 @@ IMAGE imgMenu;
 IMAGE imgGame;
 
 IMAGE imgBoss;
+IMAGE imgEnemy;
+IMAGE imgPlayer;
+IMAGE imgPlayerBullet;
 
 void LoadAllTextures() {
     // µ¯Ä»Í¼ 
@@ -35,7 +38,11 @@ void LoadAllTextures() {
     //loadimage(&imgGame, _T("res/game_bg.jpg"), SCREEN_WIDTH, SCREEN_HEIGHT);
 
     loadimage(&imgBoss, _T("res/boss.png"), 66,150);
+    loadimage(&imgEnemy, _T("res/enemy.png"), 49, 49);
+    loadimage(&imgPlayer, _T("res/player.png"), 32, 32);
+    loadimage(&imgPlayerBullet, _T("res/player_bullet.png"), 256, 256);
 }
+
 
 const int SCREEN_WIDTH = 1000;
 const int SCREEN_HEIGHT = 850;
