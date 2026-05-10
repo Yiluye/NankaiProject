@@ -1,6 +1,7 @@
 #include "Enemy.h"
 Enemy::Enemy(double x, double y, EnemyMove move)
-	: Gameobject(28, 28), hp(30), radius(14), shootCooldown(0) {
+	: Gameobject(28, 28), hp(30), radius(14), shootCooldown(0),bulletType(EnemyBulletType::NORMAL)
+{
 	pos.x = x;
 	pos.y = y;
 	enemymove = move;
@@ -50,4 +51,14 @@ void Enemy::TakeDamage(int damage)
 {
 	hp -= damage;
 	if (hp < 0) hp = 0;
+}
+
+void Enemy::SetBulletType(EnemyBulletType type) 
+{
+	bulletType = type;
+}
+
+EnemyBulletType Enemy::GetBulletType()
+{
+	return bulletType;
 }

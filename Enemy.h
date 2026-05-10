@@ -5,6 +5,13 @@
 #include "Gameobject.h"
 #include "Defines.h"
 
+
+enum EnemyBulletType {
+    NORMAL,     //狙
+    SCATTER,    //散射
+    RING,       //环形
+    LASER       //直线激光（快速）
+};
 enum  EnemyMove {
     LEFT,     // 圆形
     RIGHT       // 长方形（梭形）
@@ -18,6 +25,7 @@ private:
     static constexpr int SHOOT_DELAY = 45;  // 射击间隔（帧）
     int velocity;
     EnemyMove enemymove;
+    EnemyBulletType bulletType;
 public:
     Enemy(double x, double y, EnemyMove move);
     ~Enemy() = default;
@@ -31,6 +39,8 @@ public:
     bool CanShoot() const;
     void ResetShootCooldown();
     int GetRadius() const;
+    void SetBulletType(EnemyBulletType type);
+    EnemyBulletType GetBulletType();
 };
 
 #endif
