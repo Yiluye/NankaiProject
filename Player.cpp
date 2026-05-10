@@ -2,7 +2,7 @@
 #include"messege.h"
 #include"Global.h"
 Player::Player()
-	:Gameobject(30,30),hp(500),radius(5),speed(6)
+	:Gameobject(30,30),hp(50000),radius(5),speed(6)
 {
 	pos.x = SCREEN_WIDTH/2;
 	pos.y = 500;

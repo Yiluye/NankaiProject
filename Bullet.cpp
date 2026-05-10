@@ -1,37 +1,32 @@
 #include"Bullet.h"
 #include"Global.h"
-Bullet::Bullet(double x, double y, double vx, double vy, int r, Camp c)
-	: Gameobject(r * 2, r * 2),           // 基类宽高 = 直径
+
+
+// 圆形构造（使用贴图）
+Bullet::Bullet(double x, double y, double vx, double vy, int r, Camp c, BulletColor col)
+	: Gameobject(r * 2, r * 2),
 	velocity{ vx, vy },
 	radius(r),
 	width(r * 2),
 	height(r * 2),
+	rotation(0.0),
 	active(true),
 	camp(c),
-	shape(BulletShape::CIRCLE) {
+	shape(BulletShape::CIRCLE),
+	color(col)
+{
 	pos.x = x;
 	pos.y = y;
 }
 
-Bullet::Bullet(double x, double y, double vx, double vy, int r, Camp c, int sx, int sy)
-	: Gameobject(r * 2, r * 2),
-	velocity{ vx, vy },
-	radius(r),
-	active(true),
-	camp(c),
-	shape(BulletShape::SPRITE),
-	srcX(sx),
-	srcY(sy) {
-	pos.x = x;
-	pos.y = y;
-}
-
+// 矩形构造（无旋转）
 Bullet::Bullet(double x, double y, double vx, double vy, int w, int h, Camp c)
-	: Gameobject(w, h),                    // 基类宽高为实际宽高
+	: Gameobject(w, h),
 	velocity{ vx, vy },
-	radius(((w > h ? w : h) + 1) / 2),    // 碰撞半径取半长轴（向上取整）
+	radius(((w > h ? w : h) + 1) / 2),
 	width(w),
 	height(h),
+	rotation(0.0),
 	active(true),
 	camp(c),
 	shape(BulletShape::RECT) {
@@ -39,6 +34,7 @@ Bullet::Bullet(double x, double y, double vx, double vy, int w, int h, Camp c)
 	pos.y = y;
 }
 
+// 矩形构造（带旋转）
 Bullet::Bullet(double x, double y, double vx, double vy, int w, int h, double rot, Camp c)
 	: Gameobject(w, h),
 	velocity{ vx, vy },
@@ -85,7 +81,18 @@ void Bullet::Draw() {
 		int dstY = (int)(pos.y - drawSize / 2);
 
 		// 从精灵表中截取指定区域并绘制（球形弹幕位置：srcX=32, srcY=48）
-		putimage(dstX, dstY, drawSize, drawSize, &imgSprite, 32, 0, SRCCOPY);
+		if (color == BTRED)
+		{
+			putimage(dstX, dstY, drawSize, drawSize, &imgSprite, 32, 32, SRCCOPY);
+		}
+		else if (color == BTBLUE)
+		{
+			putimage(dstX, dstY, drawSize, drawSize, &imgSprite, 80, 48, SRCCOPY);
+		}
+		else if (color == BTYELLOW)
+		{
+			putimage(dstX, dstY, drawSize, drawSize, &imgSprite, 112, 32, SRCCOPY);
+		}
 	}
 	else if (shape == BulletShape::RECT) {
 		// 梭形（旋转矩形）
@@ -103,7 +110,7 @@ void Bullet::Draw() {
 			worldPts[i].x += (int)pos.x;
 			worldPts[i].y += (int)pos.y;
 		}
-		setfillcolor(camp == Camp::PLAYER ? GREEN : RED);
+		setfillcolor(CYAN);
 		fillpolygon(worldPts, 4);
 	}
 	// SPRITE 类型暂不处理

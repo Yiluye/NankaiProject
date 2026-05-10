@@ -4,7 +4,7 @@ Enemy::Enemy(double x, double y, EnemyMove move)
 	pos.x = x;
 	pos.y = y;
 	enemymove = move;
-	velocity = 4;
+	velocity = 1;
 }
 // ¾²Ö¹£ºÖ»¸üĞÂÀäÈ´
 void Enemy::Update()

@@ -8,38 +8,26 @@ Boss::Boss(double x, double y)
     pos.x = x;
     pos.y = y;
     Alive = 0;
-    Duration = 100;
-    Pattern = 2;
-    totaltime = 0;
-
-    Basexuanzhuansanshe = 0;
+    Duration = 200;
+    Pattern = 0;
 }
 
 void Boss::Update() {
-    if (shootTimer > 0) shootTimer--;
-
-    Alive++;
-    if (Alive > Duration)
+    if (shootTimer > 0)
     {
-        Pattern = (Pattern + 1) % 7;
-        Alive = 0;
+        shootTimer--;
     }
-    totaltime++;
-
-    // 根据血量改变阶段和弹幕模式
-    //if (hp < maxHp * 0.5 && phase == 0) {
-    //    phase = 1;
-    //    shootPattern = 1;   // 第一阶段用散射，第二阶段用自机狙
-    //}
 }
 
+// Boss.cpp 的 Draw() 函数
 void Boss::Draw() {
-    setfillcolor(RGB(200, 0, 200));  // 紫色
-    fillcircle((int)pos.x, (int)pos.y, radius);
-    // 血条
+    // 使用贴图绘制 Boss（66×150 居中）
+    putimage((int)(pos.x - 33), (int)(pos.y - 75), &imgBoss);
+
+    // 血条（根据图片大小调整位置）
     setfillcolor(RED);
-    fillrectangle((int)(pos.x - 60), (int)(pos.y - radius - 10),
-        (int)(pos.x - 60 + 120 * hp / maxHp), (int)(pos.y - radius - 5));
+    fillrectangle((int)(pos.x - 50), (int)(pos.y - 85),
+        (int)(pos.x - 50 + 120 * hp / maxHp), (int)(pos.y - 78));
 }
 
 
@@ -49,17 +37,17 @@ void Boss::Shoot(std::vector<std::shared_ptr<Bullet>>& bullets, double playerX, 
     switch (Pattern) {
     case 0: 
     {
-        //for (int i = 0; i < 10; i++) {
-          //  baseangle += pai / 10.0;
-            for (int i =0; i <=6; ++i) {
-                double angle = Basexuanzhuansanshe + i * 2 * pai /6;
-                double vx = sin(angle) * 4;
-                double vy = cos(angle) * 4;
-                bullets.push_back(std::make_shared<Bullet>(pos.x, pos.y, vx, vy, 8, Camp::ENEMY));
-            }
-            shootTimer = 20;
-            Basexuanzhuansanshe += 0.3141592;
-       // }
+        static double basexuan = 0;
+        for (int i = 0; i <= 6; ++i) {
+            double angle = basexuan + i * 2 * pai / 6;
+            double vx = sin(angle) * 8;
+            double vy = cos(angle) * 8;
+            bullets.push_back(std::make_shared<Bullet>(pos.x, pos.y, vx, vy, 8,
+                Camp::ENEMY, BulletColor::BTBLUE));
+        }
+        shootTimer = 1;
+        basexuan += 0.3141592;
+     
         break;
     }
     case 1:
@@ -71,23 +59,22 @@ void Boss::Shoot(std::vector<std::shared_ptr<Bullet>>& bullets, double playerX, 
             double angle = rotation + i * 2 * pai / numBullets;
             double vx = sin(angle) * 5;
             double vy = cos(angle) * 5;
-            bullets.push_back(std::make_shared<Bullet>(pos.x, pos.y , vx, vy, 8, Camp::ENEMY));
+            bullets.push_back(std::make_shared<Bullet>(pos.x, pos.y , vx, vy, 8, 
+                Camp::ENEMY,BulletColor::BTRED));
         }
         shootTimer = 5;
         break;
     }
     case 2: //角度变化散射
     {
-        double offset =totaltime * 0.5;
-        //int numBullets = 1;   // 5条弹道
-        //for (int i = -2; i <= 2; ++i) {
-            double baseAngle = 0;          // 基础间隔角度
-            double angle = baseAngle + offset;    // 加上摆动偏移
-            double vx = sin(angle) * 4;           // x方向速度
-            double vy = cos(angle) * 4;           // y方向速度（正向下）
-            bullets.push_back(std::make_shared<Bullet>(pos.x, pos.y + radius, vx, vy, 8, Camp::ENEMY));
-       // }
-        // 散射模式冷却：20帧
+        double offset =gametime * 0.5;
+       
+        double baseAngle = 0; 
+        double angle = baseAngle + offset; 
+        double vx = sin(angle) * 4; 
+        double vy = cos(angle) * 4; 
+         bullets.push_back(std::make_shared<Bullet>(pos.x, pos.y, vx, vy, 8,
+             Camp::ENEMY, BulletColor::BTBLUE));
         shootTimer = 1;
         break;
     }
@@ -97,14 +84,18 @@ void Boss::Shoot(std::vector<std::shared_ptr<Bullet>>& bullets, double playerX, 
         double dy = playerY - pos.y;
         double len = sqrt(dx * dx + dy * dy);
         if (len > 0.1) {
-            double vx = dx / len * 13;
-            double vy = dy / len * 13;
-            bullets.push_back(std::make_shared<Bullet>(pos.x, pos.y , vx, vy, 8, Camp::ENEMY));
-            bullets.push_back(std::make_shared<Bullet>(150, 200, vx >= 0 ? -vx : vx, vy, 8, Camp::ENEMY));
-            bullets.push_back(std::make_shared<Bullet>(600, 200, vx < 0 ? -vx : vx, vy, 8, Camp::ENEMY));
+            double vx = dx / len * 18;
+            double vy = dy / len * 18;
+            bullets.push_back(std::make_shared<Bullet>(pos.x, pos.y , vx, vy, 8,
+                Camp::ENEMY, BulletColor::BTYELLOW));
+            bullets.push_back(std::make_shared<Bullet>(150, 200, vx >= 0 ? -vx : vx, vy, 8,
+                Camp::ENEMY, BulletColor::BTRED));
+            bullets.push_back(std::make_shared<Bullet>(600, 200, vx < 0 ? -vx : vx, vy, 8,
+                Camp::ENEMY, BulletColor::BTBLUE));
         }
         else {
-            bullets.push_back(std::make_shared<Bullet>(pos.x, pos.y + radius, 0, 6, 8, Camp::ENEMY));
+            bullets.push_back(std::make_shared<Bullet>(pos.x, pos.y + radius, 0, 6, 8,
+                Camp::ENEMY, BulletColor::BTRED));
         }
         shootTimer = 1;
         break;
@@ -118,16 +109,34 @@ void Boss::Shoot(std::vector<std::shared_ptr<Bullet>>& bullets, double playerX, 
         double angularSpeed = 0.1;
         // 摆动幅度：±0.8 弧度 (约 ±45°)
         double amplitude = 1.5;
-        double angle = sin(totaltime * angularSpeed) * amplitude;
+        double angle = sin(gametime * angularSpeed) * amplitude;
 
             double vx = sin(angle) * 8;
             double vy = cos(angle) * 8;
-            bullets.push_back(std::make_shared<Bullet>(pos.x, pos.y + radius, vx, vy, 8, Camp::ENEMY));
+            bullets.push_back(std::make_shared<Bullet>(pos.x, pos.y + radius, vx, vy, 8,
+                Camp::ENEMY, BulletColor::BTRED));
        
-        shootTimer = 1;   // 缩短冷却，使弹幕更密集
+        shootTimer = 1;
         break;
     }
-    case 5: // 旋转扇形射击（明显可见整体旋转）
+    case 5: // 旋转扇形射击
+    {
+        static double baseAngle = 0.0; 
+        baseAngle += 0.2618;
+
+        int numDirections = 4;
+        for (int i = 0; i < numDirections; ++i) {
+            double angle = baseAngle + i * (1 * 3.14159 / numDirections);
+            double vx = sin(angle) * 5;
+            double vy = cos(angle) * 5;
+            bullets.push_back(std::make_shared<Bullet>(pos.x, pos.y + radius, vx, vy, 8,
+                Camp::ENEMY, BulletColor::BTRED));
+        }
+        shootTimer = 1;
+        break;
+    }
+
+    case 6: // 旋转扇形射击
     {
         static double baseAngle = 0.0;  // 或者用成员变量 BaseRotation
         baseAngle += 0.2618;
@@ -137,21 +146,23 @@ void Boss::Shoot(std::vector<std::shared_ptr<Bullet>>& bullets, double playerX, 
             double angle = baseAngle + i * (2 * 3.14159 / numDirections);
             double vx = sin(angle) * 5;
             double vy = cos(angle) * 5;
-            bullets.push_back(std::make_shared<Bullet>(pos.x, pos.y + radius, vx, vy, 8, Camp::ENEMY));
+            bullets.push_back(std::make_shared<Bullet>(pos.x, pos.y + radius, vx, vy, 8,
+                Camp::ENEMY,BulletColor::BTRED));
         }
         shootTimer = 5;
         break;
     }
-
-    case 6: // 多方向梭形弹幕（8 方向，梭形指向径向）
+    case 7: // 多方向梭形弹幕（8 方向，梭形指向径向）
     {
-        int numDirections = 16;          // 8 个方向
-        double speed = 5.0;
-        double bulletWidth = 22.0;      // 长边（尖头方向）
-        double bulletHeight = 10.0;      // 短边
+        int numDirections = 25;          // 8 个方向
+        double speed = 6.0;
+        double bulletWidth = 6.0;      // 长边（尖头方向）
+        double bulletHeight = 2.0;      // 短边
+        static double baseangle = 0.0;
+        baseangle += 0.31415;
 
         for (int i = 0; i < numDirections; ++i) {
-            double angle = 2 * pai * i / numDirections;   // 发射方向（弧度）
+            double angle = baseangle+2 * pai * i / numDirections;   // 发射方向（弧度）
             double vx = cos(angle) * speed;
             double vy = sin(angle) * speed;
             // 梭形长边指向径向（即旋转角 = 发射方向）
@@ -162,7 +173,7 @@ void Boss::Shoot(std::vector<std::shared_ptr<Bullet>>& bullets, double playerX, 
                 Camp::ENEMY
             ));
         }
-        shootTimer = 10;        // 冷却时间
+        shootTimer = 3;        // 冷却时间
         break;
     }
     break;

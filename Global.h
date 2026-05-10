@@ -18,6 +18,9 @@ extern bool Isrunning;
 extern int gamemode;
 
 extern double pai;
+extern int zhenpermiao;
+
+extern int gametime;   // 游戏全局时间
 
 
 // 声明贴图资源
@@ -26,4 +29,10 @@ extern int iconW, iconH;       // 每个弹幕的宽高（16×16）
 
 // 加载所有贴图
 void LoadAllTextures();
+
+
+extern IMAGE imgMenu;   // 主界面背景
+extern IMAGE imgGame;   // 游戏界面背景
+
+extern IMAGE imgBoss;   // Boss 图片
 #endif

@@ -16,13 +16,27 @@ bool Isrunning = true;
 int gamemode = 0;
 
 double pai = 3.141592653;
+int zhenpermiao = 60;
+
+int gametime = 0;
 
 // 定义贴图资源
 IMAGE imgSprite;
 int iconW = 16;
 int iconH = 16;
 
+IMAGE imgMenu;
+IMAGE imgGame;
+
+IMAGE imgBoss;
+
 void LoadAllTextures() {
-    // 加载精灵表
+    // 弹幕图 
     loadimage(&imgSprite, _T("res/etama3.png"), 256, 256);
+
+    //背景图
+    loadimage(&imgMenu, _T("res/menu_bg.jpg"), SCREEN_WIDTH, SCREEN_HEIGHT);
+    //loadimage(&imgGame, _T("res/game_bg.jpg"), SCREEN_WIDTH, SCREEN_HEIGHT);
+
+    loadimage(&imgBoss, _T("res/boss.png"), 66,150);
 }

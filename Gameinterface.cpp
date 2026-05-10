@@ -12,8 +12,59 @@
 //构造函数
 DanmakuGameInterface::DanmakuGameInterface()
     : Interface(L"DanmakuGame"), score(0), gameRunning(true), shootCooldown(0),
-    minionSpawnTimer(0), minionSpawnDelay(90) {
+      minionSpawnTimer(0), minionSpawnDelay(90), currentEventIndex(0) {
+    initEvents();   // 初始化事件列表
 }
+
+void DanmakuGameInterface::initEvents() {
+    //60 帧 = 1 秒
+    // 第 0 帧（游戏开始）
+    eventList.push_back({ 0, [this]() {
+        // 设置初始 Boss 模式
+        if (boss) {
+            boss->SetPattern(0);
+        }
+    } });
+
+    // 10 秒（600 帧）后
+    eventList.push_back({ 5*zhenpermiao, [this]() {
+        if (boss) {
+            boss->SetPattern(1);           // 切换 Boss 弹幕模式
+            minionSpawnDelay = 60;          // 小怪生成更快
+        }
+    } });
+
+    // 20 秒（1200 帧）后
+    eventList.push_back({ 10*zhenpermiao, [this]() {
+        if (boss) {
+            boss->SetPattern(2);
+            minionSpawnDelay = 45;
+        }
+    } });
+
+    // 30 秒（1800 帧）后
+    eventList.push_back({ 15*zhenpermiao, [this]() {
+        if (boss) {
+            boss->SetPattern(3);
+            minionSpawnDelay = 30;
+        }
+    } });
+
+    // 40 秒（2400 帧）后 - Boss 狂暴
+    eventList.push_back({ 20*zhenpermiao, [this]() {
+        if (boss) {
+            boss->SetPattern(6);           // 梭形弹幕模式
+            boss->SetShootTimer(5);         // 缩短冷却
+        }
+    } });
+
+    // 60 秒（3600 帧）后 - 游戏胜利或进入二阶段
+    eventList.push_back({ 25*zhenpermiao, [this]() {
+        // 可以显示胜利文字，或者在下一个事件中结束游戏
+        gameRunning = false;  // 胜利结束
+    } });
+}
+
 //由智能指针管理没必要手动释放
 DanmakuGameInterface::~DanmakuGameInterface() {
 }
@@ -21,6 +72,7 @@ DanmakuGameInterface::~DanmakuGameInterface() {
 //1、设置玩家和怪物位置
 //2、清楚上局残留
 void DanmakuGameInterface::Onenter() {
+    gametime = 0;
     player = std::make_shared<Player>();
     boss = std::make_shared<Boss>(SCREEN_WIDTH / 2.0, 80.0);
     //
@@ -37,6 +89,7 @@ void DanmakuGameInterface::Onexit() {
     boss.reset();
     minions.clear();
     bullets.clear();
+    gametime = 0;
 }
 //子弹更新
 void DanmakuGameInterface::updateBullets() {
@@ -110,8 +163,19 @@ void DanmakuGameInterface::checkCollisions() {
     }
 }
 
+void DanmakuGameInterface::checkEvents() {
+    while (currentEventIndex < eventList.size() &&
+        eventList[currentEventIndex].first <= gametime) {
+        // 执行对应的事件函数
+        eventList[currentEventIndex].second();
+        currentEventIndex++;
+    }
+}
 
 void DanmakuGameInterface::Update() {
+    //增加游戏时间
+    gametime++;
+
     // ESC 返回主菜单
     if (Iskeydown(VK_ESCAPE)) {
         Getapplication()->Changeinterface(L"Main");
@@ -126,6 +190,8 @@ void DanmakuGameInterface::Update() {
         return;
     }
 
+    checkEvents();
+
     //玩家位置更新
     player->Update();
 
@@ -136,9 +202,11 @@ void DanmakuGameInterface::Update() {
     {
         //双发子弹
         bullets.push_back(std::make_shared<Bullet>(
-            player->Getx()-player->GetRadius(), player->Gety() - 15, 0, -9, 4, Camp::PLAYER));
+            player->Getx()-player->GetRadius(), player->Gety() - 15, 0, -9, 4,
+            Camp::PLAYER,BulletColor::BTRED));
         bullets.push_back(std::make_shared< Bullet>(
-            player->Getx()+player->GetRadius(), player->Gety() - 15, 0, -9, 4, Camp::PLAYER));
+            player->Getx()+player->GetRadius(), player->Gety() - 15, 0, -9, 4,
+            Camp::PLAYER,BulletColor::BTRED));
         //重置射击冷却
         shootCooldown = SHOOT_DELAY;
     }
@@ -189,11 +257,13 @@ void DanmakuGameInterface::Update() {
                 double vx = dx / len * 4;
                 double vy = dy / len * 4;
                 bullets.push_back(std::make_shared<Bullet>(
-                    minion->Getx(), minion->Gety(), vx, vy, 4, Camp::ENEMY));
+                    minion->Getx(), minion->Gety(), vx, vy, 4,
+                    Camp::ENEMY, BulletColor::BTYELLOW));
             }
             else {
                 bullets.push_back(std::make_shared<Bullet>(
-                    minion->Getx(), minion->Gety(), 0, 4, 4, Camp::ENEMY));
+                    minion->Getx(), minion->Gety(), 0, 4, 4,
+                    Camp::ENEMY, BulletColor::BTYELLOW));
             }
             minion->ResetShootCooldown();
         }
@@ -217,6 +287,9 @@ void DanmakuGameInterface::Update() {
 void DanmakuGameInterface::Draw() {
     // 清屏（若有背景图可在此绘制）
     cleardevice();
+    
+    //绘制背景
+    putimage(0, 0, &imgGame);
 
     // 绘制 Boss（如果存活）
     if (boss && boss->IsAlive()) {

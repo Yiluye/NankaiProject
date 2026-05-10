@@ -40,6 +40,8 @@ void Maininterface::Update()
 
 void Maininterface::Draw()
 {
+	putimage(0, 0, &imgMenu);
+
 	RECT rect{ 0, 0, 1000, 200 };
 	LOGFONT style;
 	gettextstyle(&style);

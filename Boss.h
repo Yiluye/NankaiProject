@@ -15,14 +15,12 @@ private:
     int maxHp;
     int radius;
 
-    int totaltime;
     int shootTimer;
     int phase;             // 0=第一阶段, 1=第二阶段
     int Alive;          // 存活帧计数
     int Duration;    // 每种模式持续帧数
     int Pattern;     // 当前生效的弹幕模式
 
-    double Basexuanzhuansanshe;
 public:
     Boss(double x, double y);
     ~Boss() = default;
@@ -37,6 +35,9 @@ public:
 
     // 发射弹幕（由游戏界面调用）
     void Shoot(std::vector<std::shared_ptr<Bullet>>& bullets, double playerX, double playerY);
+
+    void SetPattern(int pattern) { Pattern = pattern; }
+    void SetShootTimer(int timer) { shootTimer = timer; }
 };
 
 #endif

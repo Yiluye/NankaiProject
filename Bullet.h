@@ -3,31 +3,40 @@
 #define _BULLET_H
 
 #include"Gameobject.h"
+#include"Defines.h" 
 
 enum class BulletShape {
     CIRCLE,     // 圆形
     RECT,       // 长方形（梭形）
-    SPRITE
+};
+
+enum BulletColor {
+    BTRED=0,
+    BTBLUE,
+    BTYELLOW
 };
 
 
-class Bullet :public Gameobject {
+class Bullet : public Gameobject {
 private:
     Vector velocity;
     int radius;
-    int width;               // 长方形宽度（圆形时等于 2*radius）
-    int height;              // 长方形高度（圆形时等于 2*radius）
+    int width;               // 长方形宽度
+    int height;              // 长方形高度
     double rotation;
-
     bool active;
     Camp camp;
-    BulletShape shape;       // 形状
-    int srcX, srcY;
+    BulletShape shape;
+    BulletColor color;
 public:
-    Bullet(double x, double y, double vx, double vy, int r, Camp c);
+    // 圆形构造（使用贴图）
+    Bullet(double x, double y, double vx, double vy, int r, Camp c,BulletColor col);
+
+    // 矩形构造（无旋转）
     Bullet(double x, double y, double vx, double vy, int w, int h, Camp c);
+
+    // 矩形构造（带旋转）
     Bullet(double x, double y, double vx, double vy, int w, int h, double rot, Camp c);
-    Bullet(double x, double y, double vx, double vy, int r, Camp c, int srcX, int srcY);
 
     ~Bullet() = default;
 
@@ -39,4 +48,5 @@ public:
     Camp GetCamp() const;
     int GetRadius() const;
 };
+
 #endif // !_BULLET_H

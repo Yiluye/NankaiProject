@@ -5,6 +5,7 @@
 #include"Button.h"
 #include<memory>
 #include<vector>
+#include <functional>
 
 class Interface {
 protected:
@@ -69,6 +70,14 @@ private:
 
     int minionSpawnTimer;       // 当前剩余冷却帧数
     int minionSpawnDelay;       // 动态生成间隔（帧）
+
+
+    //下面为按时间进行的变量
+    int currentEventIndex;             // 当前执行到第几个事件
+    std::vector<std::pair<int, std::function<void()>>> eventList;  // 事件列表
+
+    void initEvents();                 // 初始化事件列表
+    void checkEvents();                // 检查并执行事件
 
 public:
     DanmakuGameInterface();
