@@ -13,6 +13,19 @@ Bullet::Bullet(double x, double y, double vx, double vy, int r, Camp c)
 	pos.y = y;
 }
 
+Bullet::Bullet(double x, double y, double vx, double vy, int r, Camp c, int sx, int sy)
+	: Gameobject(r * 2, r * 2),
+	velocity{ vx, vy },
+	radius(r),
+	active(true),
+	camp(c),
+	shape(BulletShape::SPRITE),
+	srcX(sx),
+	srcY(sy) {
+	pos.x = x;
+	pos.y = y;
+}
+
 Bullet::Bullet(double x, double y, double vx, double vy, int w, int h, Camp c)
 	: Gameobject(w, h),                    // 基类宽高为实际宽高
 	velocity{ vx, vy },
@@ -40,6 +53,8 @@ Bullet::Bullet(double x, double y, double vx, double vy, int w, int h, double ro
 	pos.y = y;
 }
 
+
+
 void Bullet::Update() 
 {
 	pos.x += velocity.x;
@@ -63,13 +78,17 @@ static POINT RotatePoint(double cx, double cy, double x, double y, double angle)
 }
 
 void Bullet::Draw() {
-	setfillcolor(camp == Camp::PLAYER ? GREEN : RED);
-
 	if (shape == BulletShape::CIRCLE) {
-		fillcircle((int)pos.x, (int)pos.y, radius);
+		// 使用贴图（从精灵表中截取）
+		int drawSize = radius * 2;   // 绘制尺寸 = 直径
+		int dstX = (int)(pos.x - drawSize / 2);
+		int dstY = (int)(pos.y - drawSize / 2);
+
+		// 从精灵表中截取指定区域并绘制（球形弹幕位置：srcX=32, srcY=48）
+		putimage(dstX, dstY, drawSize, drawSize, &imgSprite, 32, 0, SRCCOPY);
 	}
-	else { // RECT
-		// 计算未旋转的四个顶点（中心在 (0,0)，半宽半高）
+	else if (shape == BulletShape::RECT) {
+		// 梭形（旋转矩形）
 		double hw = width / 2.0;
 		double hh = height / 2.0;
 		POINT pts[4] = {
@@ -78,7 +97,6 @@ void Bullet::Draw() {
 			{ (int)(hw), (int)(hh) },
 			{ (int)(-hw), (int)(hh) }
 		};
-		// 旋转并平移到世界坐标
 		POINT worldPts[4];
 		for (int i = 0; i < 4; ++i) {
 			worldPts[i] = RotatePoint(0, 0, pts[i].x, pts[i].y, rotation);
@@ -86,15 +104,9 @@ void Bullet::Draw() {
 			worldPts[i].y += (int)pos.y;
 		}
 		setfillcolor(camp == Camp::PLAYER ? GREEN : RED);
-		setlinecolor(WHITE); // 可选边框
-		polygon(worldPts, 4);
-		// 如果需要填充内部，需用 floodfill 或直接设置填充色，但 polygon 默认只画边框？ EasyX 中 polygon 可填充。
-		// 正确用法：先 setfillcolor，然后 polygon 会自动填充。上面的代码只是画了边框。修正：
-		// 改用 solidpolygon? 实际上 polygon 既画边又填充，但需要先设置填充色和线条色。
-		// 为了清晰，我们直接调用 fillpolygon
-		setfillcolor(camp == Camp::PLAYER ? GREEN : RED);
 		fillpolygon(worldPts, 4);
 	}
+	// SPRITE 类型暂不处理
 }
 
 

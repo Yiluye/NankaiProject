@@ -6,7 +6,8 @@
 
 enum class BulletShape {
     CIRCLE,     // 圆形
-    RECT        // 长方形（梭形）
+    RECT,       // 长方形（梭形）
+    SPRITE
 };
 
 
@@ -21,10 +22,12 @@ private:
     bool active;
     Camp camp;
     BulletShape shape;       // 形状
+    int srcX, srcY;
 public:
     Bullet(double x, double y, double vx, double vy, int r, Camp c);
     Bullet(double x, double y, double vx, double vy, int w, int h, Camp c);
     Bullet(double x, double y, double vx, double vy, int w, int h, double rot, Camp c);
+    Bullet(double x, double y, double vx, double vy, int r, Camp c, int srcX, int srcY);
 
     ~Bullet() = default;
 

@@ -5,18 +5,24 @@
 #include "Gameobject.h"
 #include "Defines.h"
 
+enum  EnemyMove {
+    LEFT,     // 圆形
+    RIGHT       // 长方形（梭形）
+};
+
 class Enemy : public Gameobject {
 private:
     int hp;
     int radius;
     int shootCooldown;
     static constexpr int SHOOT_DELAY = 45;  // 射击间隔（帧）
-
+    int velocity;
+    EnemyMove enemymove;
 public:
-    Enemy(double x, double y);
+    Enemy(double x, double y, EnemyMove move);
     ~Enemy() = default;
 
-    void Update();  // 静止：只更新冷却
+    void Update();
     void Draw() override;
 
     int GetHp() const;

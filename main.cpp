@@ -43,6 +43,8 @@ int APIENTRY WinMain(
 
 void Init()
 {
+    LoadAllTextures();  // ¼ÓÔØÌùÍ¼
+
     Application* app = Getapplication();
     app->Registerinterface(new Maininterface())
         ->Registerinterface(new DanmakuGameInterface());

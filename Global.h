@@ -18,4 +18,12 @@ extern bool Isrunning;
 extern int gamemode;
 
 extern double pai;
+
+
+// 声明贴图资源
+extern IMAGE imgSprite;        // 精灵表（包含所有弹幕）
+extern int iconW, iconH;       // 每个弹幕的宽高（16×16）
+
+// 加载所有贴图
+void LoadAllTextures();
 #endif

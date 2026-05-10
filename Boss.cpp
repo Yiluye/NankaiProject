@@ -55,7 +55,7 @@ void Boss::Shoot(std::vector<std::shared_ptr<Bullet>>& bullets, double playerX, 
                 double angle = Basexuanzhuansanshe + i * 2 * pai /6;
                 double vx = sin(angle) * 4;
                 double vy = cos(angle) * 4;
-                bullets.push_back(std::make_shared<Bullet>(pos.x, pos.y, vx, vy, 5, Camp::ENEMY));
+                bullets.push_back(std::make_shared<Bullet>(pos.x, pos.y, vx, vy, 8, Camp::ENEMY));
             }
             shootTimer = 20;
             Basexuanzhuansanshe += 0.3141592;
@@ -71,7 +71,7 @@ void Boss::Shoot(std::vector<std::shared_ptr<Bullet>>& bullets, double playerX, 
             double angle = rotation + i * 2 * pai / numBullets;
             double vx = sin(angle) * 5;
             double vy = cos(angle) * 5;
-            bullets.push_back(std::make_shared<Bullet>(pos.x, pos.y , vx, vy, 5, Camp::ENEMY));
+            bullets.push_back(std::make_shared<Bullet>(pos.x, pos.y , vx, vy, 8, Camp::ENEMY));
         }
         shootTimer = 5;
         break;
@@ -85,7 +85,7 @@ void Boss::Shoot(std::vector<std::shared_ptr<Bullet>>& bullets, double playerX, 
             double angle = baseAngle + offset;    // 加上摆动偏移
             double vx = sin(angle) * 4;           // x方向速度
             double vy = cos(angle) * 4;           // y方向速度（正向下）
-            bullets.push_back(std::make_shared<Bullet>(pos.x, pos.y + radius, vx, vy, 5, Camp::ENEMY));
+            bullets.push_back(std::make_shared<Bullet>(pos.x, pos.y + radius, vx, vy, 8, Camp::ENEMY));
        // }
         // 散射模式冷却：20帧
         shootTimer = 1;
@@ -97,14 +97,14 @@ void Boss::Shoot(std::vector<std::shared_ptr<Bullet>>& bullets, double playerX, 
         double dy = playerY - pos.y;
         double len = sqrt(dx * dx + dy * dy);
         if (len > 0.1) {
-            double vx = dx / len * 10;
-            double vy = dy / len * 10;
-            bullets.push_back(std::make_shared<Bullet>(pos.x, pos.y , vx, vy, 5, Camp::ENEMY));
-            bullets.push_back(std::make_shared<Bullet>(150, 200, vx >= 0 ? -vx : vx, vy, 5, Camp::ENEMY));
-            bullets.push_back(std::make_shared<Bullet>(600, 200, vx < 0 ? -vx : vx, vy, 5, Camp::ENEMY));
+            double vx = dx / len * 13;
+            double vy = dy / len * 13;
+            bullets.push_back(std::make_shared<Bullet>(pos.x, pos.y , vx, vy, 8, Camp::ENEMY));
+            bullets.push_back(std::make_shared<Bullet>(150, 200, vx >= 0 ? -vx : vx, vy, 8, Camp::ENEMY));
+            bullets.push_back(std::make_shared<Bullet>(600, 200, vx < 0 ? -vx : vx, vy, 8, Camp::ENEMY));
         }
         else {
-            bullets.push_back(std::make_shared<Bullet>(pos.x, pos.y + radius, 0, 6, 5, Camp::ENEMY));
+            bullets.push_back(std::make_shared<Bullet>(pos.x, pos.y + radius, 0, 6, 8, Camp::ENEMY));
         }
         shootTimer = 1;
         break;
@@ -137,7 +137,7 @@ void Boss::Shoot(std::vector<std::shared_ptr<Bullet>>& bullets, double playerX, 
             double angle = baseAngle + i * (2 * 3.14159 / numDirections);
             double vx = sin(angle) * 5;
             double vy = cos(angle) * 5;
-            bullets.push_back(std::make_shared<Bullet>(pos.x, pos.y + radius, vx, vy, 5, Camp::ENEMY));
+            bullets.push_back(std::make_shared<Bullet>(pos.x, pos.y + radius, vx, vy, 8, Camp::ENEMY));
         }
         shootTimer = 5;
         break;
@@ -145,10 +145,10 @@ void Boss::Shoot(std::vector<std::shared_ptr<Bullet>>& bullets, double playerX, 
 
     case 6: // 多方向梭形弹幕（8 方向，梭形指向径向）
     {
-        int numDirections = 8;          // 8 个方向
+        int numDirections = 16;          // 8 个方向
         double speed = 5.0;
-        double bulletWidth = 16.0;      // 长边（尖头方向）
-        double bulletHeight = 6.0;      // 短边
+        double bulletWidth = 22.0;      // 长边（尖头方向）
+        double bulletHeight = 10.0;      // 短边
 
         for (int i = 0; i < numDirections; ++i) {
             double angle = 2 * pai * i / numDirections;   // 发射方向（弧度）
@@ -162,7 +162,7 @@ void Boss::Shoot(std::vector<std::shared_ptr<Bullet>>& bullets, double playerX, 
                 Camp::ENEMY
             ));
         }
-        shootTimer = 30;        // 冷却时间
+        shootTimer = 10;        // 冷却时间
         break;
     }
     break;

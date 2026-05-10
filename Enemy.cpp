@@ -1,13 +1,17 @@
 #include "Enemy.h"
-Enemy::Enemy(double x, double y)
+Enemy::Enemy(double x, double y, EnemyMove move)
 	: Gameobject(28, 28), hp(30), radius(14), shootCooldown(0) {
 	pos.x = x;
 	pos.y = y;
+	enemymove = move;
+	velocity = 4;
 }
 // ¾²Ö¹£ºÖ»¸üÐÂÀäÈ´
 void Enemy::Update()
 {
 	if (shootCooldown > 0) shootCooldown--;
+	if (enemymove == EnemyMove::LEFT) pos.x -= velocity;
+	if (enemymove == EnemyMove::RIGHT) pos.x += velocity;
 }
 
 void Enemy::Draw()

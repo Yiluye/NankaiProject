@@ -130,10 +130,11 @@ void DanmakuGameInterface::Update() {
     player->Update();
 
     //玩家射击更新
-    //射击冷却更新
     if (shootCooldown > 0) shootCooldown--;
     //射击
-    if ((Iskeydown('Z') || Iskeydown(VK_SPACE)) && shootCooldown == 0) {
+    if ((Iskeydown('Z') || Iskeydown(VK_SPACE)) && shootCooldown == 0)
+    {
+        //双发子弹
         bullets.push_back(std::make_shared<Bullet>(
             player->Getx()-player->GetRadius(), player->Gety() - 15, 0, -9, 4, Camp::PLAYER));
         bullets.push_back(std::make_shared< Bullet>(
@@ -143,11 +144,13 @@ void DanmakuGameInterface::Update() {
     }
 
     //Boss射击更新
-    if (boss && boss->IsAlive()) {
+    if (boss && boss->IsAlive()) 
+    {
         boss->Update();
         boss->Shoot(bullets, player->Getx(), player->Gety());
     }
-    else if (boss && !boss->IsAlive()) {
+    else if (boss && !boss->IsAlive()) 
+    {
         //Boss死亡直接结束游戏
         gameRunning = false;
     }
@@ -160,7 +163,10 @@ void DanmakuGameInterface::Update() {
             // 随机位置（屏幕上半区）
             double randX = Random(40.0, SCREEN_WIDTH - 40.0);
             double randY = Random(30.0, 150.0);
-            minions.push_back(std::make_shared<Enemy>(randX, randY));
+            //minions.push_back(std::make_shared<Enemy>(randX, randY,0));
+            EnemyMove move = (Random(0, 2) == 0) ? EnemyMove::LEFT : EnemyMove::RIGHT;
+            minions.push_back(std::make_shared<Enemy>(randX, randY, move));
+            //minions.push_back(std::make_shared<Enemy>(randX, randY, EnemyMove::LEFT));
             //更新小怪生成冷却
             minionSpawnTimer = minionSpawnDelay;
         }
