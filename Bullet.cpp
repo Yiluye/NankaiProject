@@ -1,6 +1,8 @@
 #include"Bullet.h"
 #include"Global.h"
 
+#include <windows.h>      
+#pragma comment(lib, "Msimg32.lib") 
 
 // 圆形构造（使用贴图）
 Bullet::Bullet(double x, double y, double vx, double vy, int r, Camp c, BulletColor col)
@@ -80,30 +82,27 @@ void Bullet::Draw() {
 		int dstY = (int)(pos.y - drawSize / 2);
 
 		if (camp == Camp::PLAYER) {
-			// 玩家子弹使用独立精灵表，从 (128, 16) 截取
-			putimage(dstX, dstY, drawSize, drawSize, &imgPlayerBullet, 128, 16, SRCCOPY);
+			// 玩家子弹（从 player_bullet.png 截取）
+			TransparentBlt(GetImageHDC(NULL), dstX, dstY, drawSize, drawSize,
+				GetImageHDC(&imgPlayerBullet), 128, 16, 16, 16,
+				RGB(0, 0, 0));
 		}
 		else {
-			// 敌方子弹使用原精灵表
-			if (color == BTRED) {
-				putimage(dstX, dstY, drawSize, drawSize, &imgSprite, 32, 32, SRCCOPY);
-			}
-			else if (color == BTBLUE) {
-				putimage(dstX, dstY, drawSize, drawSize, &imgSprite, 80, 48, SRCCOPY);
-			}
-			else if (color == BTCYAN) {
-				putimage(dstX, dstY, drawSize, drawSize, &imgSprite, 112, 32, SRCCOPY);
-			}
-			else if (color == BTYELLOW) {
-				putimage(dstX, dstY, drawSize, drawSize, &imgSprite, 192, 32, SRCCOPY);
-			}
-			else if (color == BTPINK) {
-				putimage(dstX, dstY, drawSize, drawSize, &imgSprite, 64, 32, SRCCOPY);
-			}
+			// 敌方子弹（从 imgSprite 截取）
+			int srcX = 32, srcY = 32;
+			if (color == BTRED) { srcX = 32; srcY = 32; }
+			else if (color == BTBLUE) { srcX = 80; srcY = 48; }
+			else if (color == BTCYAN) { srcX = 112; srcY = 32; }
+			else if (color == BTYELLOW) { srcX = 192; srcY = 32; }
+			else if (color == BTPINK) { srcX = 64; srcY = 32; }
+
+			TransparentBlt(GetImageHDC(NULL), dstX, dstY, drawSize, drawSize,
+				GetImageHDC(&imgSprite), srcX, srcY, 16, 16,
+				RGB(67,54,54));
 		}
 	}
 	else if (shape == BulletShape::RECT) {
-		// 梭形（旋转矩形）
+		// 梭形（旋转矩形）保持不变
 		double hw = width / 2.0;
 		double hh = height / 2.0;
 		POINT pts[4] = {
@@ -121,7 +120,6 @@ void Bullet::Draw() {
 		setfillcolor(CYAN);
 		fillpolygon(worldPts, 4);
 	}
-	// SPRITE 类型暂不处理
 }
 
 

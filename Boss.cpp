@@ -2,6 +2,8 @@
 #include "Bullet.h"
 #include "Global.h"
 #include <cmath>
+#include <windows.h>      
+#pragma comment(lib, "Msimg32.lib") 
 
 Boss::Boss(double x, double y)
     : Gameobject(60, 60), hp(1500), maxHp(300), radius(30), shootTimer(0), Pattern(0), phase(0) {
@@ -21,8 +23,11 @@ void Boss::Update() {
 
 // Boss.cpp 的 Draw() 函数
 void Boss::Draw() {
-    // 使用贴图绘制 Boss（66×150 居中）
-    putimage((int)(pos.x - 33), (int)(pos.y - 75), &imgBoss);
+    // 使用透明绘制（抠掉黑色背景）
+        TransparentBlt(GetImageHDC(NULL),
+            (int)(pos.x - 33), (int)(pos.y - 75), 66, 150,
+            GetImageHDC(&imgBoss), 0, 0, 66, 150,
+            RGB(255,255,255));  // 黑色背景变透明
 
     // 血条（根据图片大小调整位置）
     setfillcolor(RED);

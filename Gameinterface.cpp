@@ -455,6 +455,8 @@ void DanmakuGameInterface::Draw() {
         item->Draw();
     }
 
+    setbkmode(TRANSPARENT);  // 去掉文字黑底
+
     // ========== 绘制右侧 UI 面板 ==========
     int uiX = GAME_AREA_RIGHT;
     int uiWidth = SCREEN_WIDTH - GAME_AREA_RIGHT;
@@ -565,18 +567,24 @@ void DanmakuGameInterface::Draw() {
 
     // ========== 游戏结束画面 ==========
     if (!gameRunning) {
-        // 半透明遮罩
-        //setfillcolor(RGB(0, 0, 0));
-        //fillrectangle(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
+        // 设置文字背景透明（关键）
+        setbkmode(TRANSPARENT);
 
-        settextstyle(40, 0, _T("微软雅黑"));
-        settextcolor(RGB(255, 0, 0));
-        outtextxy( GAME_AREA_RIGHT/ 2 - 100, SCREEN_HEIGHT / 2 - 60, _T("GAME OVER"));
+        settextstyle(48, 0, _T("微软雅黑"));
+        settextcolor(RGB(255, 50, 50));
+        outtextxy(GAME_AREA_RIGHT / 2 - 120, SCREEN_HEIGHT / 2 - 80, _T("G A M E   O V E R"));
 
         settextstyle(20, 0, _T("微软雅黑"));
-        settextcolor(RGB(255, 255, 255));
-        outtextxy(GAME_AREA_RIGHT / 2 - 100, SCREEN_HEIGHT / 2, _T("按 R 键重新开始"));
-        outtextxy(GAME_AREA_RIGHT / 2 - 100, SCREEN_HEIGHT / 2 + 35, _T("按 ESC 键返回菜单"));
+        settextcolor(RGB(1, 1, 1));
+        outtextxy(GAME_AREA_RIGHT / 2 - 100, SCREEN_HEIGHT / 2 - 20, _T("按 R 键重新开始"));
+        outtextxy(GAME_AREA_RIGHT / 2 - 100, SCREEN_HEIGHT / 2 + 15, _T("按 ESC 键返回菜单"));
+
+        TCHAR scoreText[64];
+        _stprintf_s(scoreText, _T("最 终 得 分 :  %d"), score);
+        outtextxy(GAME_AREA_RIGHT / 2 - 100, SCREEN_HEIGHT / 2 + 60, scoreText);
+
+        // 恢复默认背景模式（可选）
+        setbkmode(OPAQUE);
     }
 }
 

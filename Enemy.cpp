@@ -1,5 +1,8 @@
 #include "Enemy.h"
 #include "Global.h"
+
+
+
 Enemy::Enemy(double x, double y, EnemyMove move)
 	: Gameobject(28, 28), hp(30), radius(14), shootCooldown(0),bulletType(EnemyBulletType::NORMAL)
 {

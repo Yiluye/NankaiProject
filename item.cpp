@@ -2,6 +2,9 @@
 #include "Global.h"
 #include <cmath>
 
+#include <windows.h>      
+#pragma comment(lib, "Msimg32.lib") 
+
 Item::Item(double x, double y, ItemType t, int v)
     : Gameobject(12, 12), type(t), value(v), lifeTime(300), active(true) {
     pos.x = x;
@@ -30,15 +33,16 @@ void Item::Draw() {
     int dstY = (int)(pos.y - 8);
 
     if (type == ItemType::POWER_RED) {
-        // 红色 P 点：从 (0, 0) 截取
-        putimage(dstX, dstY, drawSize, drawSize, &imgSprite, 0, 0, SRCCOPY);
+        TransparentBlt(GetImageHDC(NULL), dstX, dstY, drawSize, drawSize,
+            GetImageHDC(&imgSprite), 0, 0, 16, 16,
+            RGB(67, 54, 54));
     }
     else if (type == ItemType::POWER_BLUE) {
-        // 蓝色 P 点：从 (16, 0) 截取
-        putimage(dstX, dstY, drawSize, drawSize, &imgSprite, 16, 0, SRCCOPY);
+        TransparentBlt(GetImageHDC(NULL), dstX, dstY, drawSize, drawSize,
+            GetImageHDC(&imgSprite), 16, 0, 16, 16,
+            RGB(67, 54, 54));
     }
 }
-
 void Item::Collect() {
     active = false;
 }

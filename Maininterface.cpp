@@ -44,8 +44,10 @@ void Maininterface::Draw()
 
 	RECT rect{ 0, 0, 1000, 200 };
 	LOGFONT style;
+	setbkmode(TRANSPARENT);
 	gettextstyle(&style);
 	settextstyle(60, 0, L"Consolas");
+	settextcolor(RGB(1, 1, 1));
 	drawtext(L"DANMAKU GAME", &rect, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
 	settextstyle(&style);
 

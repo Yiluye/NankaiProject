@@ -1,6 +1,10 @@
 #include"Player.h"
 #include"messege.h"
 #include"Global.h"
+
+#include <windows.h>      
+#pragma comment(lib, "Msimg32.lib")  
+
 Player::Player()
 	:Gameobject(30,30),hp(totalhp),radius(5),speed(6)
 {
@@ -28,19 +32,14 @@ void Player::Update()
 
 }
 void Player::Draw() {
-	// 将 60×60 的图片缩放到 32×32 绘制
 	int drawSize = 32;
 	int drawX = (int)(pos.x - drawSize / 2);
-	int drawY = (int)(pos.y - drawSize / 2-12);
-	putimage(drawX, drawY, drawSize, drawSize, &imgPlayer, 0, 0, SRCCOPY);
+	int drawY = (int)(pos.y - drawSize / 2 - 12);
 
-	setfillcolor(WHITE);
-	setlinecolor(WHITE);
-	fillcircle((int)pos.x, (int)pos.y, 4);  // radius = 16
-	// 血条（按 32×32 调整位置）
-	//setfillcolor(RED);
-	//fillrectangle((int)(pos.x - 16), (int)(pos.y - 22),
-		//(int)(pos.x - 16 + (hp * 32 / 100)), (int)(pos.y - 18));
+	// 使用透明绘制（抠掉黑色背景）
+	TransparentBlt(GetImageHDC(NULL), drawX, drawY, drawSize, drawSize,
+		GetImageHDC(&imgPlayer), 0, 0, 32, 32,
+		RGB(0, 0, 0));  // 抠掉黑色背景
 }
 
 int Player::GetHp() const

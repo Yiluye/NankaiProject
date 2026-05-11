@@ -37,7 +37,8 @@ void LoadAllTextures() {
 
     //±³¾°Í¼
     loadimage(&imgMenu, _T("res/menu_bg.jpg"), SCREEN_WIDTH, SCREEN_HEIGHT);
-    //loadimage(&imgGame, _T("res/game_bg.jpg"), SCREEN_WIDTH, SCREEN_HEIGHT);
+    loadimage(&imgGame, _T("res/game_bg.png"), SCREEN_WIDTH, SCREEN_HEIGHT);
+
 
     loadimage(&imgBoss, _T("res/boss.png"), 66,150);
     loadimage(&imgEnemy, _T("res/enemy.png"), 49, 49);
