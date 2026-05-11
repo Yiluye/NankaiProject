@@ -40,6 +40,10 @@ void Player::Draw() {
 	TransparentBlt(GetImageHDC(NULL), drawX, drawY, drawSize, drawSize,
 		GetImageHDC(&imgPlayer), 0, 0, 32, 32,
 		RGB(0, 0, 0));  // 抠掉黑色背景
+	//绘制判定点
+	setfillcolor(WHITE);
+	setlinecolor(WHITE);
+	fillcircle((int)pos.x, (int)pos.y, 4);  // 白色实心圆，半径 4
 }
 
 int Player::GetHp() const
