@@ -117,7 +117,8 @@ void Bullet::Draw() {
 			worldPts[i].x += (int)pos.x;
 			worldPts[i].y += (int)pos.y;
 		}
-		setfillcolor(CYAN);
+		setfillcolor(YELLOW);
+		setlinecolor(YELLOW);
 		fillpolygon(worldPts, 4);
 	}
 }

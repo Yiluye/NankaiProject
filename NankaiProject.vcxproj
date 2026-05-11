@@ -136,6 +136,7 @@
     <ClInclude Include="messege.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="Random.h" />
+    <ClInclude Include="resource.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp" />
@@ -152,6 +153,34 @@
     <ClCompile Include="messege.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Random.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="res\123.jpg" />
+    <Image Include="res\boss.png" />
+    <Image Include="res\boss1.png" />
+    <Image Include="res\enemy.png" />
+    <Image Include="res\etama3.png" />
+    <Image Include="res\game_bg.png" />
+    <Image Include="res\game_bg1.jpg" />
+    <Image Include="res\imgBoss1.png" />
+    <Image Include="res\menu_bg.jpg" />
+    <Image Include="res\player.png" />
+    <Image Include="res\player1.png" />
+    <Image Include="res\player_bullet.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Media Include="res\baka.mp3" />
+    <Media Include="res\baka.wav" />
+    <Media Include="res\bgm.mp3" />
+    <Media Include="res\shoot.wav" />
+    <Media Include="res\shoot1.wav" />
+    <Media Include="res\shoot2.wav" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="res\boss.paint" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="NankaiProject.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

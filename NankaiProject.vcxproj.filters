@@ -9,94 +9,180 @@
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
     </Filter>
-    <Filter Include="资源文件">
-      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
-      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    <Filter Include="源文件\ui">
+      <UniqueIdentifier>{17a0ae7f-0728-4a9c-9077-af0069ba2112}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\ui">
+      <UniqueIdentifier>{a40a61fd-736c-4ef3-b087-a73240ed9497}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\object">
+      <UniqueIdentifier>{22e7a908-0af3-413a-9919-3401b16fd20d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="res">
+      <UniqueIdentifier>{45bbdfc6-caa9-4b84-abc7-46a9a041270c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\assit">
+      <UniqueIdentifier>{9510a031-ed6e-4d13-ad0f-f5e992138324}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\object">
+      <UniqueIdentifier>{bee1bc10-fb59-4844-b316-f5675b039354}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\assit">
+      <UniqueIdentifier>{68fc5f8f-480c-41dc-b023-5af4f35444c5}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Defines.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="messege.h">
-      <Filter>头文件</Filter>
+    <ClInclude Include="Interface.h">
+      <Filter>头文件\ui</Filter>
     </ClInclude>
     <ClInclude Include="Button.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="Interface.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="Application.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="Global.h">
-      <Filter>头文件</Filter>
+      <Filter>头文件\ui</Filter>
     </ClInclude>
     <ClInclude Include="Gameobject.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="Random.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="Player.h">
-      <Filter>头文件</Filter>
+      <Filter>头文件\object</Filter>
     </ClInclude>
     <ClInclude Include="Enemy.h">
-      <Filter>头文件</Filter>
+      <Filter>头文件\object</Filter>
     </ClInclude>
-    <ClInclude Include="Bullet.h">
-      <Filter>头文件</Filter>
+    <ClInclude Include="Player.h">
+      <Filter>头文件\object</Filter>
     </ClInclude>
     <ClInclude Include="Boss.h">
-      <Filter>头文件</Filter>
+      <Filter>头文件\object</Filter>
+    </ClInclude>
+    <ClInclude Include="Bullet.h">
+      <Filter>头文件\object</Filter>
+    </ClInclude>
+    <ClInclude Include="Application.h">
+      <Filter>头文件\ui</Filter>
     </ClInclude>
     <ClInclude Include="item.h">
+      <Filter>头文件\object</Filter>
+    </ClInclude>
+    <ClInclude Include="Defines.h">
+      <Filter>头文件\assit</Filter>
+    </ClInclude>
+    <ClInclude Include="Global.h">
+      <Filter>头文件\assit</Filter>
+    </ClInclude>
+    <ClInclude Include="messege.h">
+      <Filter>头文件\assit</Filter>
+    </ClInclude>
+    <ClInclude Include="Random.h">
+      <Filter>头文件\assit</Filter>
+    </ClInclude>
+    <ClInclude Include="resource.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="messege.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="Button.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="Maininterface.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="Gameinterface.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="Application.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="main.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="Global.cpp">
-      <Filter>源文件</Filter>
+    <ClCompile Include="Button.cpp">
+      <Filter>源文件\ui</Filter>
     </ClCompile>
-    <ClCompile Include="Gameobject.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="Random.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="Player.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="Enemy.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="Bullet.cpp">
-      <Filter>源文件</Filter>
+    <ClCompile Include="Application.cpp">
+      <Filter>源文件\ui</Filter>
     </ClCompile>
     <ClCompile Include="Boss.cpp">
-      <Filter>源文件</Filter>
+      <Filter>源文件\object</Filter>
+    </ClCompile>
+    <ClCompile Include="Bullet.cpp">
+      <Filter>源文件\object</Filter>
+    </ClCompile>
+    <ClCompile Include="Enemy.cpp">
+      <Filter>源文件\object</Filter>
+    </ClCompile>
+    <ClCompile Include="Gameinterface.cpp">
+      <Filter>源文件\ui</Filter>
+    </ClCompile>
+    <ClCompile Include="Gameobject.cpp">
+      <Filter>源文件\object</Filter>
+    </ClCompile>
+    <ClCompile Include="Global.cpp">
+      <Filter>源文件\assit</Filter>
     </ClCompile>
     <ClCompile Include="item.cpp">
-      <Filter>源文件</Filter>
+      <Filter>源文件\object</Filter>
     </ClCompile>
+    <ClCompile Include="Maininterface.cpp">
+      <Filter>源文件\ui</Filter>
+    </ClCompile>
+    <ClCompile Include="messege.cpp">
+      <Filter>源文件\assit</Filter>
+    </ClCompile>
+    <ClCompile Include="Player.cpp">
+      <Filter>源文件\object</Filter>
+    </ClCompile>
+    <ClCompile Include="Random.cpp">
+      <Filter>源文件\assit</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="res\123.jpg">
+      <Filter>res</Filter>
+    </Image>
+    <Image Include="res\boss.png">
+      <Filter>res</Filter>
+    </Image>
+    <Image Include="res\boss1.png">
+      <Filter>res</Filter>
+    </Image>
+    <Image Include="res\enemy.png">
+      <Filter>res</Filter>
+    </Image>
+    <Image Include="res\etama3.png">
+      <Filter>res</Filter>
+    </Image>
+    <Image Include="res\game_bg.png">
+      <Filter>res</Filter>
+    </Image>
+    <Image Include="res\game_bg1.jpg">
+      <Filter>res</Filter>
+    </Image>
+    <Image Include="res\imgBoss1.png">
+      <Filter>res</Filter>
+    </Image>
+    <Image Include="res\menu_bg.jpg">
+      <Filter>res</Filter>
+    </Image>
+    <Image Include="res\player.png">
+      <Filter>res</Filter>
+    </Image>
+    <Image Include="res\player_bullet.png">
+      <Filter>res</Filter>
+    </Image>
+    <Image Include="res\player1.png">
+      <Filter>res</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <Media Include="res\baka.mp3">
+      <Filter>res</Filter>
+    </Media>
+    <Media Include="res\baka.wav">
+      <Filter>res</Filter>
+    </Media>
+    <Media Include="res\bgm.mp3">
+      <Filter>res</Filter>
+    </Media>
+    <Media Include="res\shoot.wav">
+      <Filter>res</Filter>
+    </Media>
+    <Media Include="res\shoot1.wav">
+      <Filter>res</Filter>
+    </Media>
+    <Media Include="res\shoot2.wav">
+      <Filter>res</Filter>
+    </Media>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="res\boss.paint">
+      <Filter>res</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="NankaiProject.rc" />
   </ItemGroup>
 </Project>

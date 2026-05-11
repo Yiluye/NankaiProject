@@ -567,24 +567,53 @@ void DanmakuGameInterface::Draw() {
 
     // ========== 游戏结束画面 ==========
     if (!gameRunning) {
-        // 设置文字背景透明（关键）
         setbkmode(TRANSPARENT);
 
+        
+
+        // GAME OVER 文字（带黑色描边）
         settextstyle(48, 0, _T("微软雅黑"));
-        settextcolor(RGB(255, 50, 50));
+
+        // 先输出黑色描边（偏移 2 像素）
+        settextcolor(RGB(0, 0, 0));
+        outtextxy(GAME_AREA_RIGHT / 2 - 122, SCREEN_HEIGHT / 2 - 82, _T("G A M E   O V E R"));
+        outtextxy(GAME_AREA_RIGHT / 2 - 118, SCREEN_HEIGHT / 2 - 78, _T("G A M E   O V E R"));
+        outtextxy(GAME_AREA_RIGHT / 2 - 122, SCREEN_HEIGHT / 2 - 78, _T("G A M E   O V E R"));
+        outtextxy(GAME_AREA_RIGHT / 2 - 118, SCREEN_HEIGHT / 2 - 82, _T("G A M E   O V E R"));
+
+        // 再输出红色主体
+        settextcolor(RGB(255, 80, 80));
         outtextxy(GAME_AREA_RIGHT / 2 - 120, SCREEN_HEIGHT / 2 - 80, _T("G A M E   O V E R"));
 
+        // 分隔线
+        setlinecolor(RGB(255, 100, 100));
+        setlinestyle(PS_SOLID, 2);
+        line(GAME_AREA_RIGHT / 2 - 150, SCREEN_HEIGHT / 2 - 30,
+            GAME_AREA_RIGHT / 2 + 150, SCREEN_HEIGHT / 2 - 30);
+        line(GAME_AREA_RIGHT / 2 - 150, SCREEN_HEIGHT / 2 - 28,
+            GAME_AREA_RIGHT / 2 + 150, SCREEN_HEIGHT / 2 - 28);
+
+        // 提示文字（带阴影效果）
         settextstyle(20, 0, _T("微软雅黑"));
-        settextcolor(RGB(1, 1, 1));
+
+        // 阴影
+        settextcolor(RGB(0, 0, 0));
+        outtextxy(GAME_AREA_RIGHT / 2 - 99, SCREEN_HEIGHT / 2 - 19, _T("按 R 键重新开始"));
+        outtextxy(GAME_AREA_RIGHT / 2 - 99, SCREEN_HEIGHT / 2 + 16, _T("按 ESC 键返回菜单"));
+
+        // 主体文字
+        settextcolor(RGB(255, 255, 100));
         outtextxy(GAME_AREA_RIGHT / 2 - 100, SCREEN_HEIGHT / 2 - 20, _T("按 R 键重新开始"));
         outtextxy(GAME_AREA_RIGHT / 2 - 100, SCREEN_HEIGHT / 2 + 15, _T("按 ESC 键返回菜单"));
 
+        // 最终得分（金色高亮）
         TCHAR scoreText[64];
-        _stprintf_s(scoreText, _T("最 终 得 分 :  %d"), score);
-        outtextxy(GAME_AREA_RIGHT / 2 - 100, SCREEN_HEIGHT / 2 + 60, scoreText);
+        _stprintf_s(scoreText, _T("★ 最 终 得 分 ： %d ★"), score);
+        settextcolor(RGB(58, 26, 255));
+        outtextxy(GAME_AREA_RIGHT / 2 - 120, SCREEN_HEIGHT / 2 + 65, scoreText);
 
-        // 恢复默认背景模式（可选）
-        setbkmode(OPAQUE);
+        // 恢复默认设置
+        setlinestyle(PS_SOLID, 1);
     }
 }
 

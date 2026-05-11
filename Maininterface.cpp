@@ -48,7 +48,7 @@ void Maininterface::Draw()
 	gettextstyle(&style);
 	settextstyle(60, 0, L"Consolas");
 	settextcolor(RGB(1, 1, 1));
-	drawtext(L"DANMAKU GAME", &rect, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
+	drawtext(L"Nankai Project", &rect, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
 	settextstyle(&style);
 
 	_pstartbutton->Draw();
